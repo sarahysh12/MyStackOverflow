@@ -1,4 +1,4 @@
-package me.arminb;
+package me.arminb.sara;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -17,7 +17,7 @@ public class JettyServer {
         ServletHolder jerseyServlet = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
         jerseyServlet.setInitOrder(0);
 
-        //jerseyServlet.setInitParameter( "jersey.config.server.provider.classnames",endPoint.class.getCanonicalName());
+        //jerseyServlet.setInitParameter( "jersey.config.server.provider.classnames",EndPoint.class.getCanonicalName());
         try {
             jettyServer.start();
             jettyServer.join();
