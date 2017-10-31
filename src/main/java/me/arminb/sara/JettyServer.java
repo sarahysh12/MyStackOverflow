@@ -11,6 +11,11 @@ public class JettyServer {
 
     @Autowired
     WebApplicationContext webApplicationContext;
+    int portNumber;
+
+    public JettyServer(int port) {
+        portNumber = port;
+    }
 
     public void startJetty() throws Exception{
 
@@ -18,7 +23,7 @@ public class JettyServer {
         context.setContextPath("/");
         context.setErrorHandler(null);
 
-        Server jettyServer = new Server(8080);
+        Server jettyServer = new Server(portNumber);
         jettyServer.setHandler(context);
 
         context.addServlet(new ServletHolder(new DispatcherServlet(webApplicationContext)), "/*");
