@@ -1,13 +1,11 @@
 package me.arminb.sara.configuration;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 
 @Configuration
 @ComponentScan("me.arminb.sara")
-@Import({JettyConfiguration.class})
+@PropertySource({"classpath:/app.properties","classpath:/local.properties"})
 public class MainConfiguration {
 
 }

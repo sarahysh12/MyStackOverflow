@@ -4,18 +4,20 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+
+@Component
 public class JettyServer {
 
     @Autowired
     WebApplicationContext webApplicationContext;
-    int portNumber;
 
-    public JettyServer(int port) {
-        portNumber = port;
-    }
+    @Value("${jetty.port:8000}")
+    int portNumber;
 
     public void startJetty() throws Exception{
 
