@@ -4,23 +4,18 @@ import me.arminb.sara.entities.User;
 import me.arminb.sara.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.core.MediaType;
-import java.util.Scanner;
-
 @RestController
-@RequestMapping("user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-
-    @RequestMapping(value="findall", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public void findAll() {
         userService.findAll();
         /*
@@ -34,7 +29,7 @@ public class UserController {
         */
     }
 
-    @RequestMapping(value="find/{email}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+    @RequestMapping(value="/?email={email}", method = RequestMethod.GET)
     public void findUser(@PathVariable("email") String email) {
         userService.findUser(email);
         /*
@@ -48,7 +43,7 @@ public class UserController {
         */
     }
 
-    @RequestMapping(value="create", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Void> addUser(
             @RequestBody User user) {
 
@@ -63,7 +58,7 @@ public class UserController {
     }
 
 
-    @RequestMapping(value="delete/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(
             @PathVariable("id") String email) {
 
