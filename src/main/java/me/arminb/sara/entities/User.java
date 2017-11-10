@@ -1,6 +1,6 @@
-package me.arminb.sara;
+package me.arminb.sara.entities;
 
-public class UserBean {
+public class User {
 
     private long id;
     private String userName;
