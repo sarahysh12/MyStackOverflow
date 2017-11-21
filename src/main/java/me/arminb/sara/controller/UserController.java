@@ -8,70 +8,70 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public void findAll() {
-        userService.findAll();
-        /*
+    public ResponseEntity<List<User>> findAll() {
         try {
-            return new ResponseEntity<Void>(userService.findAll(), HttpStatus.OK);
+            List<User> users = userService.findAll();
+            return new ResponseEntity<List<User>>(users, HttpStatus.OK);
         }
         catch (Exception e){
-
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST_400);
+            return new ResponseEntity<List<User>>(HttpStatus.BAD_REQUEST);
         }
-        */
     }
 
-    @RequestMapping(value="/?email={email}", method = RequestMethod.GET)
-    public void findUser(@PathVariable("email") String email) {
-        userService.findUser(email);
-        /*
+
+    //do i need response body or not?
+    @RequestMapping(value="/{id}", method = RequestMethod.GET)
+    public ResponseEntity<User> findUser(@PathVariable("id") String id) {
         try {
-            return new ResponseEntity<User>(userService.findUser(email), HttpStatus.OK);
+            User user = userService.find(id);
+            return new ResponseEntity<User>(user, HttpStatus.OK);
         }
         catch (Exception e){
-
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST_400);
+            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
         }
-        */
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> addUser(
-            @RequestBody User user) {
-
+    public ResponseEntity<Void> addUser(@RequestBody User user) {
         try {
-            userService.addUser(user);
+            userService.create(user);
             return new ResponseEntity<Void>(HttpStatus.OK);
         }
         catch (Exception e){
-
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> delete(
-            @PathVariable("id") String email) {
-
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
         try {
-            userService.delete(email);
+            userService.delete(id);
             return new ResponseEntity<Void>(HttpStatus.OK);
         }
         catch (Exception e){
-
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
     }
 
-
+    @RequestMapping(value= "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Void> update(@PathVariable("id") String id, @RequestBody User user) {
+        try {
+            userService.update(id, user);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

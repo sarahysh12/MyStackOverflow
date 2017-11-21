@@ -4,10 +4,10 @@ import me.arminb.sara.entities.User;
 import java.util.List;
 
 public interface UserDAO {
-    public void findAll(); //or List<User>
-    public void addUser(User user); //set adduser as boolean
-    public void findUser(String email); //User
-    public void delete(String email);
-    //update
+    public List<User> findAll();
+    public User find(String id);
+    public void create(User user);
+    public void delete(String id);
+    public void update(String id, User user); //by email or user?
 
 }

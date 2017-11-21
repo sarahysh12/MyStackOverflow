@@ -1,26 +1,26 @@
 package me.arminb.sara.entities;
 
+
+import org.bson.types.ObjectId;
+
 public class User {
 
-    private long id;
-    private String userName;
+    private ObjectId id;
+    private String username;
     private String email;
     private String password;
 
-    public long getId() {
-        return id;
+
+    public ObjectId getId() {return id;}
+
+    public void setId(ObjectId id) {this.id = id;}
+
+    public String getUsername() {
+        return username;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
