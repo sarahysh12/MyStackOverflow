@@ -6,8 +6,8 @@ import java.util.List;
 public interface UserDAO {
     public List<User> findAll();
     public User find(String id);
-    public void create(User user);
-    public void delete(String id);
-    public void update(String id, User user); //by email or user?
+    public User create(User user);
+    public boolean delete(String id);
+    public User update(String id, User user);
 
 }

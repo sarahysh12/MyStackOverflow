@@ -29,7 +29,6 @@ public class UserController {
     }
 
 
-    //do i need response body or not?
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     public ResponseEntity<User> findUser(@PathVariable("id") String id) {
         try {
@@ -42,35 +41,32 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
-            userService.create(user);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<User>(userService.create(user), HttpStatus.OK);
         }
         catch (Exception e){
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Boolean> delete(@PathVariable("id") String id) {
         try {
-            userService.delete(id);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<Boolean>(userService.delete(id), HttpStatus.OK);
         }
         catch (Exception e){
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Boolean>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(value= "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> update(@PathVariable("id") String id, @RequestBody User user) {
+    public ResponseEntity<User> update(@PathVariable("id") String id, @RequestBody User user) {
         try {
-            userService.update(id, user);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<User>(userService.update(id, user), HttpStatus.OK);
         }
         catch (Exception e){
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
         }
     }
 

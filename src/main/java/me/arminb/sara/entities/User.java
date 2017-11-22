@@ -1,13 +1,19 @@
 package me.arminb.sara.entities;
 
 
+import com.sun.istack.internal.NotNull;
 import org.bson.types.ObjectId;
+
+//import javax.validation.constraints.Size;
 
 public class User {
 
     private ObjectId id;
+
     private String username;
+
     private String email;
+
     private String password;
 
 

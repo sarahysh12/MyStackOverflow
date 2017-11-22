@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserService {
     public List<User> findAll();
     public User find(String id);
-    public void create(User user);
-    public void delete(String id);
-    public void update(String id, User user);//or by User?
+    public User create(User user);
+    public boolean delete(String id);
+    public User update(String id, User user);
 }
