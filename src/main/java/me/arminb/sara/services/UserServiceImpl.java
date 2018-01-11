@@ -22,12 +22,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
         try{
-            if (pageNumber == null){
-                pageNumber = PAGE_NUMBER;
-            }
-            if (pageCount == null){
-                pageCount = PAGE_COUNT;
-            }
             return userDAO.findAll(pageNumber, pageCount);
         }
         catch(DataAccessException e){
@@ -47,12 +41,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> find(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException {
         try{
-            if (pageNumber == null){
-                pageNumber = PAGE_NUMBER;
-            }
-            if (pageCount == null){
-                pageCount = PAGE_COUNT;
-            }
             return userDAO.find(username, email, pageNumber, pageCount);
         }
         catch(DataAccessException e){

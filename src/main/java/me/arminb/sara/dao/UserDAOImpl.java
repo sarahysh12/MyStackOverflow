@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static me.arminb.sara.constants.PAGE_COUNT;
+import static me.arminb.sara.constants.PAGE_NUMBER;
 
 @Repository("userDAO")
 public class UserDAOImpl implements UserDAO {
@@ -31,6 +32,12 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<User> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
+        if (pageNumber == null){
+            pageNumber = PAGE_NUMBER;
+        }
+        if (pageCount == null){
+            pageCount = PAGE_COUNT;
+        }
         List<User> list = new ArrayList();
         try {
             MongoCollection<Document> collection = database.getCollection("users");
@@ -69,13 +76,19 @@ public class UserDAOImpl implements UserDAO {
                 return null;
             }
         } catch (MongoException e) {
-            logger.warn("Failed to fetch user "+ id + " from the database", e);
+            logger.warn("Failed to fetch user {} from the database", id, e);
             throw new DataAccessException();
         }
     }
 
     @Override
     public List<User> find(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException {
+        if (pageNumber == null){
+            pageNumber = PAGE_NUMBER;
+        }
+        if (pageCount == null){
+            pageCount = PAGE_COUNT;
+        }
         List<User> list = new ArrayList();
         try {
             MongoCollection<Document> collection = database.getCollection("users");
