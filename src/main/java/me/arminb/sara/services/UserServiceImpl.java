@@ -1,15 +1,11 @@
 package me.arminb.sara.services;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import me.arminb.sara.dao.UserDAO;
-import me.arminb.sara.entities.User;
 
 import java.util.List;
 
@@ -21,19 +17,9 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
 
     @Override
-    public List<User> findAll() throws DataAccessException {
+    public List<User> findAll(int pageNumber) throws DataAccessException {
         try{
-            return userDAO.findAll();
-        }
-        catch(DataAccessException e){
-            throw e;
-        }
-    }
-
-    @Override
-    public User create(User user) throws DataAccessException {
-        try{
-            return userDAO.create(user);
+            return userDAO.findAll(pageNumber);
         }
         catch(DataAccessException e){
             throw e;
@@ -50,15 +36,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> find(String id, String username, String email) throws DataAccessException {
+    public List<User> find(String username, String email, int pageNumber) throws DataAccessException {
         try{
-            if (id != null)
-                return userDAO.find(new ObjectId(id), username, email);
-            else
-                return userDAO.find(null, username, email);
-    }catch(DataAccessException e){
+            return userDAO.find(username, email, pageNumber);
+        }
+        catch(DataAccessException e){
         throw e;
-    }
+        }
     }
 
     @Override
@@ -72,13 +56,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(String id, User user) throws DataAccessException {
+    public User save(User user) throws DataAccessException {
         try{
-            user.setId(new ObjectId(id));
-            return userDAO.update(user);
+            return userDAO.save(user);
         }
         catch(DataAccessException e){
             throw e;
         }
     }
+
 }
