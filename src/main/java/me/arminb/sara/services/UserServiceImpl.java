@@ -9,6 +9,9 @@ import me.arminb.sara.dao.UserDAO;
 
 import java.util.List;
 
+import static me.arminb.sara.constants.PAGE_COUNT;
+import static me.arminb.sara.constants.PAGE_NUMBER;
+
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -17,9 +20,15 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
 
     @Override
-    public List<User> findAll(int pageNumber) throws DataAccessException {
+    public List<User> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
         try{
-            return userDAO.findAll(pageNumber);
+            if (pageNumber == null){
+                pageNumber = PAGE_NUMBER;
+            }
+            if (pageCount == null){
+                pageCount = PAGE_COUNT;
+            }
+            return userDAO.findAll(pageNumber, pageCount);
         }
         catch(DataAccessException e){
             throw e;
@@ -36,9 +45,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> find(String username, String email, int pageNumber) throws DataAccessException {
+    public List<User> find(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException {
         try{
-            return userDAO.find(username, email, pageNumber);
+            if (pageNumber == null){
+                pageNumber = PAGE_NUMBER;
+            }
+            if (pageCount == null){
+                pageCount = PAGE_COUNT;
+            }
+            return userDAO.find(username, email, pageNumber, pageCount);
         }
         catch(DataAccessException e){
         throw e;

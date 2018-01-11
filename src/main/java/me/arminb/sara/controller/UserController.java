@@ -20,15 +20,10 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<User>> findAll(@RequestParam(value="number", required=false) String number) {
+    public ResponseEntity<List<User>> findAll(@RequestParam(value="page_number", required=false) Integer pageNumber,
+                                              @RequestParam(value="page_count", required = false) Integer pageCount) {
         try {
-            Integer pageNumber;
-            if (number == null){
-                pageNumber = new Integer(1);
-            }else {
-                pageNumber = new Integer(number);
-            }
-            List<User> users = userService.findAll(pageNumber);
+            List<User> users = userService.findAll(pageNumber, pageCount);
 
             return new ResponseEntity<List<User>>(users, HttpStatus.OK);
         }
@@ -57,15 +52,10 @@ public class UserController {
     @RequestMapping(value="/search",method = RequestMethod.GET)
     public  ResponseEntity<List<User>> find( @RequestParam(value="username", required=false) String username,
                                              @RequestParam(value="email", required = false) String email,
-                                             @RequestParam(value="number", required = false) String number) {
+                                             @RequestParam(value="page_number", required = false) Integer pageNumber,
+                                             @RequestParam(value="page_count", required = false) Integer pageCount) {
         try {
-            Integer pageNumber;
-            if (number == null){
-                pageNumber = new Integer(1);
-            }else {
-                pageNumber = new Integer(number);
-            }
-            List<User> users = userService.find(username, email, pageNumber);
+            List<User> users = userService.find(username, email, pageNumber, pageCount);
             if(users != null) {
                 return new ResponseEntity<List<User>>(users, HttpStatus.OK);
             } else {

@@ -19,21 +19,22 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.arminb.sara.constants.PAGE_COUNT;
+
 @Repository("userDAO")
 public class UserDAOImpl implements UserDAO {
 
-    public static final int PAGE_SIZE = 3;
     Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     @Autowired
     private MongoDatabase database;
 
     @Override
-    public List<User> findAll(int pageNumber) throws DataAccessException {
+    public List<User> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
         List<User> list = new ArrayList();
         try {
             MongoCollection<Document> collection = database.getCollection("users");
-            MongoCursor<Document> iterator = collection.find().skip(PAGE_SIZE * (pageNumber - 1)).limit(PAGE_SIZE).iterator();
+            MongoCursor<Document> iterator = collection.find().skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
             while (iterator.hasNext()) {
                 String jsonInString = iterator.next().toJson();
                 Gson g = new GsonBuilder().create();
@@ -68,13 +69,13 @@ public class UserDAOImpl implements UserDAO {
                 return null;
             }
         } catch (MongoException e) {
-            logger.warn("Failed to fetch this user from the database", e);
+            logger.warn("Failed to fetch user "+ id + " from the database", e);
             throw new DataAccessException();
         }
     }
 
     @Override
-    public List<User> find(String username, String email, int pageNumber) throws DataAccessException {
+    public List<User> find(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException {
         List<User> list = new ArrayList();
         try {
             MongoCollection<Document> collection = database.getCollection("users");
@@ -86,7 +87,7 @@ public class UserDAOImpl implements UserDAO {
                 query.append("email", email);
             }
             if (query.size() != 0) {
-                MongoCursor<Document> cursor = collection.find(query).skip(PAGE_SIZE * (pageNumber - 1)).limit(PAGE_SIZE).iterator();
+                MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
                 while (cursor.hasNext()) {
                     String jsonInString = cursor.next().toJson();
                     Gson g = new GsonBuilder().create();
@@ -137,7 +138,7 @@ public class UserDAOImpl implements UserDAO {
             ));
             BasicDBObject searchQuery = new BasicDBObject().append("_id", user.getId());
             UpdateResult result = collection.updateOne(searchQuery, newDocument, (new UpdateOptions()).upsert(true));
-            if (result.getModifiedCount() > 0 | result.getUpsertedId() != null){
+            if (result.getModifiedCount() > 0 || result.getUpsertedId() != null){
                 return user;
             }
             else{
