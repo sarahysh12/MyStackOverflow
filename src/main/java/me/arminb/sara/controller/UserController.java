@@ -20,8 +20,8 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<User>> findAll(@RequestParam(value="page_number", required=false) Integer pageNumber,
-                                              @RequestParam(value="page_count", required = false) Integer pageCount) {
+    public ResponseEntity<List<User>> findAll(@RequestParam(value="page", required=false) Integer pageNumber,
+                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
         try {
             List<User> users = userService.findAll(pageNumber, pageCount);
 
@@ -52,8 +52,8 @@ public class UserController {
     @RequestMapping(value="/search",method = RequestMethod.GET)
     public  ResponseEntity<List<User>> find( @RequestParam(value="username", required=false) String username,
                                              @RequestParam(value="email", required = false) String email,
-                                             @RequestParam(value="page_number", required = false) Integer pageNumber,
-                                             @RequestParam(value="page_count", required = false) Integer pageCount) {
+                                             @RequestParam(value="page", required = false) Integer pageNumber,
+                                             @RequestParam(value="pageCount", required = false) Integer pageCount) {
         try {
             List<User> users = userService.find(username, email, pageNumber, pageCount);
             if(users != null) {
