@@ -1,5 +1,6 @@
 package me.arminb.sara.controller;
 
+import me.arminb.sara.controller.models.UserRequest;
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
 import me.arminb.sara.services.UserService;
@@ -70,8 +71,9 @@ public class UserController {
 
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody UserRequest userReq) {
         try {
+            User user = userReq.toUser();
             return new ResponseEntity<User>(userService.save(user), HttpStatus.OK);
         }
         catch (DataAccessException e){
@@ -90,8 +92,9 @@ public class UserController {
     }
 
     @RequestMapping(value= "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<User> update(@PathVariable("id") String id, @RequestBody User user) {
+    public ResponseEntity<User> update(@PathVariable("id") String id, @RequestBody UserRequest userReq) {
         try {
+            User user = userReq.toUser();
             user.setId(new ObjectId(id));
             User user_obj = userService.save(user);
             if(user_obj != null) {
