@@ -90,8 +90,7 @@ public class UserController {
             return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @RequestMapping(value= "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value= "/{id}", method = RequestMethod.PUT, consumes =  MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> update(@PathVariable("id") String id, @RequestBody UserRequest userReq) {
         try {
             User user = userReq.toUser();
