@@ -1,34 +1,41 @@
 package me.arminb.sara.entities;
 
-import org.bson.types.ObjectId;
 
 import java.util.Date;
-
+import java.util.List;
 
 public class Question {
 
-    private ObjectId _id;
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    private Date date;
+
+    private String id;
 
     private String title;
 
     private String content;
 
-    private String[] answers;
+    private List<Answer> answers;
 
     private int rate;
 
-    private String date;
+    private List<String> tags;
 
-    private String[] tags;
+    private String user;
 
-    private ObjectId user;
-
-    public ObjectId getId() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void setId(ObjectId _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -47,11 +54,11 @@ public class Question {
         this.content = content;
     }
 
-    public String[] getAnswers() {
+    public List<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(String[] answers) {
+    public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
 
@@ -63,27 +70,19 @@ public class Question {
         this.rate = rate;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String[] getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(String[] tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
-    public ObjectId getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(ObjectId user) {
+    public void setUser(String user) {
         this.user = user;
     }
 }

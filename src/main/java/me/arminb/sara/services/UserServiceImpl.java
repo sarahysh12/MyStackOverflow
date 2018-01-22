@@ -9,8 +9,6 @@ import me.arminb.sara.dao.UserDAO;
 
 import java.util.List;
 
-import static me.arminb.sara.constants.PAGE_COUNT;
-import static me.arminb.sara.constants.PAGE_NUMBER;
 
 
 @Service("userService")
@@ -32,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(String id) throws DataAccessException {
         try{
-            return userDAO.findById(new ObjectId(id));
+            return userDAO.findById(id);
         }catch(DataAccessException e){
             throw e;
         }
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean delete(String id) throws DataAccessException {
         try{
-            return userDAO.delete(new ObjectId(id));
+            return userDAO.delete(id);
         }
         catch(DataAccessException e){
             throw e;

@@ -1,16 +1,15 @@
 package me.arminb.sara.dao;
 
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mongodb.BasicDBObject;
-import com.mongodb.MongoException;
+import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import me.arminb.sara.entities.Answer;
+import me.arminb.sara.entities.Comment;
 import me.arminb.sara.entities.Question;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -19,11 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.print.Doc;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-import static me.arminb.sara.constants.PAGE_COUNT;
-import static me.arminb.sara.constants.PAGE_NUMBER;
+import static me.arminb.sara.constants.*;
 
 @Repository("questionDAO")
 public class QuestionDAOImpl implements QuestionDAO {
@@ -33,22 +34,46 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Autowired
     private MongoDatabase database;
 
+
     @Override
     public List<Question> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
         if (pageNumber == null){
-            pageNumber = PAGE_NUMBER;
+            pageNumber = DEFAULT_PAGE_NUMBER;
         }
         if (pageCount == null){
-            pageCount = PAGE_COUNT;
+            pageCount = DEFAULT_PAGE_COUNT;
         }
         List<Question> list = new ArrayList();
         try {
             MongoCollection<Document> collection = database.getCollection("questions");
             MongoCursor<Document> iterator = collection.find().skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
             while (iterator.hasNext()) {
-                String jsonInString = iterator.next().toJson();
-                Gson g = new GsonBuilder().create();
-                Question question = g.fromJson(jsonInString, Question.class);
+
+                Document questionDoc = iterator.next();
+                Question question = new Question();
+
+                //Date
+                DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+                Date date = null;
+                try {
+                    date = format.parse(questionDoc.get("date").toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                List<String> tagList = (List<String>) questionDoc.get("tags");
+                question.setTags(tagList);
+
+                question.setId(questionDoc.get("_id").toString());
+                question.setDate(date);
+                question.setContent(questionDoc.get("content").toString());
+                question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
+                question.setTitle(questionDoc.get("title").toString());
+                question.setUser(questionDoc.get("user").toString());
+
+                List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
+                question.setAnswers(ansList);
+
                 list.add(question);
             }
             if (list.size() != 0) {
@@ -64,16 +89,38 @@ public class QuestionDAOImpl implements QuestionDAO {
     }
 
     @Override
-    public Question findById(ObjectId id) throws DataAccessException {
+    public Question findById(String id) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("questions");
             BasicDBObject query = new BasicDBObject();
-            query.append("_id", id);
+            query.append("_id", new ObjectId(id));
             MongoCursor<Document> cursor = collection.find(query).iterator();
             if (cursor.hasNext()) {
-                String jsonInString = cursor.next().toJson();
-                Gson g = new GsonBuilder().create();
-                Question question = g.fromJson(jsonInString, Question.class);
+                Document questionDoc = cursor.next();
+                Question question = new Question();
+
+                //Date
+                DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+                Date date = null;
+                try {
+                    date = format.parse(questionDoc.get("date").toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                List<String> tagList = (List<String>) questionDoc.get("tags");
+                question.setTags(tagList);
+
+                question.setId(questionDoc.get("_id").toString());
+                question.setDate(date);
+                question.setContent(questionDoc.get("content").toString());
+                question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
+                question.setTitle(questionDoc.get("title").toString());
+                question.setUser(questionDoc.get("user").toString());
+
+                List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
+                question.setAnswers(ansList);
+
                 return question;
             }else{
                 return null;
@@ -87,10 +134,10 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public List<Question> find(String title, String tag, Integer pageNumber, Integer pageCount) throws DataAccessException {
         if (pageNumber == null){
-            pageNumber = PAGE_NUMBER;
+            pageNumber = DEFAULT_PAGE_NUMBER;
         }
         if (pageCount == null){
-            pageCount = PAGE_COUNT;
+            pageCount = DEFAULT_PAGE_COUNT;
         }
         List<Question> list = new ArrayList();
         try {
@@ -100,15 +147,37 @@ public class QuestionDAOImpl implements QuestionDAO {
                 query.append("title", title);
             }
             if (tag != null) {
-                query.append("tag", tag);
+                query.append("tags", tag);
             }
             if (query.size() != 0) {
                 MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
                 while (cursor.hasNext()) {
-                    String jsonInString = cursor.next().toJson();
-                    Gson g = new GsonBuilder().create();
-                    Question question_obj = g.fromJson(jsonInString, Question.class);
-                    list.add(question_obj);
+                    Document questionDoc = cursor.next();
+                    Question question = new Question();
+
+                    //Date
+                    DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+                    Date date = null;
+                    try {
+                        date = format.parse(questionDoc.get("date").toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    List<String> tagList = (List<String>) questionDoc.get("tags");
+                    question.setTags(tagList);
+
+                    question.setId(questionDoc.get("_id").toString());
+                    question.setDate(date);
+                    question.setContent(questionDoc.get("content").toString());
+                    question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
+                    question.setTitle(questionDoc.get("title").toString());
+                    question.setUser(questionDoc.get("user").toString());
+
+                    List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
+                    question.setAnswers(ansList);
+
+                    list.add(question);
                 }
             }
             if (list.size() != 0) {
@@ -124,37 +193,19 @@ public class QuestionDAOImpl implements QuestionDAO {
     }
 
     @Override
-    public boolean delete(ObjectId id) throws DataAccessException {
-        try {
-            MongoCollection<Document> collection = database.getCollection("questions");
-            BasicDBObject query = new BasicDBObject();
-            query.put("_id", id);
-            DeleteResult result = collection.deleteOne(query);
-            if (result.getDeletedCount() == 0) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        } catch(MongoException e){
-            logger.warn("Failed to delete the question from the database", e);
-            throw new DataAccessException();
-        }
-    }
-
-    @Override
-    public Question save(Question question) throws DataAccessException {
+    public Question saveQuestion(Question question) throws DataAccessException {
         try{
             if (question.getId() == null){
-                question.setId(new ObjectId());
+                question.setId(new ObjectId().toString());
             }
+
             MongoCollection<Document> collection = database.getCollection("questions");
             BasicDBObject newDocument = new BasicDBObject();
             newDocument.append("$set", new BasicDBObject().append("title", question.getTitle()).append("rate", question.getRate())
-                    .append("content", question.getContent()).append("answers", question.getAnswers()).append("user", question.getUser())
+                    .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
                     .append("date", question.getDate()).append("tags", question.getTags())
             );
-            BasicDBObject searchQuery = new BasicDBObject().append("_id", question.getId());
+            BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(question.getId()));
             UpdateResult result = collection.updateOne(searchQuery, newDocument, (new UpdateOptions()).upsert(true));
             if (result.getModifiedCount() > 0 || result.getUpsertedId() != null){
                 return question;
@@ -165,6 +216,25 @@ public class QuestionDAOImpl implements QuestionDAO {
         }
         catch(MongoException e){
             logger.warn("Failed to upsert the question to the database", e);
+            throw new DataAccessException();
+        }
+    }
+
+    @Override
+    public boolean deleteQuestion(String id) throws DataAccessException {
+        try {
+            MongoCollection<Document> collection = database.getCollection("questions");
+            BasicDBObject query = new BasicDBObject();
+            query.put("_id", new ObjectId(id));
+            DeleteResult result = collection.deleteOne(query);
+            if (result.getDeletedCount() == 0) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        } catch(MongoException e){
+            logger.warn("Failed to delete the question from the database", e);
             throw new DataAccessException();
         }
     }

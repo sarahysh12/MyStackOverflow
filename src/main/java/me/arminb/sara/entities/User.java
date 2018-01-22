@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 
 public class User {
 
-    private ObjectId _id;
+    private String id;
 
     private String username;
 
@@ -17,9 +17,9 @@ public class User {
     private String password;
 
 
-    public ObjectId getId() {return _id;}
+    public String getId() {return id;}
 
-    public void setId(ObjectId id) {this._id = id;}
+    public void setId(String id) {this.id = id;}
 
     public String getUsername() {
         return username;

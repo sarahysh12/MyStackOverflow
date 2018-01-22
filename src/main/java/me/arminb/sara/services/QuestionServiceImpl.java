@@ -2,6 +2,8 @@ package me.arminb.sara.services;
 
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.dao.QuestionDAO;
+import me.arminb.sara.entities.Answer;
+import me.arminb.sara.entities.Comment;
 import me.arminb.sara.entities.Question;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @Service("questionService")
 public class QuestionServiceImpl implements QuestionService{
+
     @Autowired
     private QuestionDAO questionDAO;
 
@@ -28,7 +31,7 @@ public class QuestionServiceImpl implements QuestionService{
     @Override
     public Question findById(String id) throws DataAccessException {
         try{
-            return questionDAO.findById(new ObjectId(id));
+            return questionDAO.findById(id);
         }catch(DataAccessException e){
             throw e;
         }
@@ -45,9 +48,9 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    public boolean delete(String id) throws DataAccessException {
+    public Question saveQuestion(Question question) throws DataAccessException {
         try{
-            return questionDAO.delete(new ObjectId(id));
+            return questionDAO.saveQuestion(question);
         }
         catch(DataAccessException e){
             throw e;
@@ -55,13 +58,15 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    public Question save(Question question) throws DataAccessException {
+    public boolean deleteQuestion(String id) throws DataAccessException {
         try{
-            return questionDAO.save(question);
+            return questionDAO.deleteQuestion(id);
         }
         catch(DataAccessException e){
             throw e;
         }
     }
+
+
 
 }

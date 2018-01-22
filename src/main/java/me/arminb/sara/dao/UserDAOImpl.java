@@ -9,6 +9,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import me.arminb.sara.entities.Answer;
+import me.arminb.sara.entities.Question;
 import me.arminb.sara.entities.User;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -16,11 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import static me.arminb.sara.constants.PAGE_COUNT;
-import static me.arminb.sara.constants.PAGE_NUMBER;
+import static me.arminb.sara.constants.*;
 
 @Repository("userDAO")
 public class UserDAOImpl implements UserDAO {
@@ -33,19 +39,23 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
         if (pageNumber == null){
-            pageNumber = PAGE_NUMBER;
+            pageNumber = DEFAULT_PAGE_NUMBER;
         }
         if (pageCount == null){
-            pageCount = PAGE_COUNT;
+            pageCount = DEFAULT_PAGE_COUNT;
         }
         List<User> list = new ArrayList();
         try {
             MongoCollection<Document> collection = database.getCollection("users");
             MongoCursor<Document> iterator = collection.find().skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
             while (iterator.hasNext()) {
-                String jsonInString = iterator.next().toJson();
-                Gson g = new GsonBuilder().create();
-                User user = g.fromJson(jsonInString, User.class);
+
+                Document userDoc = iterator.next();
+                User user = new User();
+                user.setId(userDoc.get("_id").toString());
+                user.setUsername(userDoc.get("username").toString());
+                user.setPassword(userDoc.get("username").toString());
+                user.setEmail(userDoc.get("email").toString());
                 list.add(user);
             }
             if (list.size() != 0) {
@@ -61,16 +71,19 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User findById(ObjectId id) throws DataAccessException {
+    public User findById(String id) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("users");
             BasicDBObject query = new BasicDBObject();
-            query.append("_id", id);
+            query.append("_id", new ObjectId(id));
             MongoCursor<Document> cursor = collection.find(query).iterator();
             if (cursor.hasNext()) {
-                String jsonInString = cursor.next().toJson();
-                Gson g = new GsonBuilder().create();
-                User user = g.fromJson(jsonInString, User.class);
+                Document userDoc = cursor.next();
+                User user = new User();
+                user.setId(userDoc.get("_id").toString());
+                user.setUsername(userDoc.get("username").toString());
+                user.setPassword(userDoc.get("username").toString());
+                user.setEmail(userDoc.get("email").toString());
                 return user;
             }else{
                 return null;
@@ -84,10 +97,10 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> find(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException {
         if (pageNumber == null){
-            pageNumber = PAGE_NUMBER;
+            pageNumber = DEFAULT_PAGE_NUMBER;
         }
         if (pageCount == null){
-            pageCount = PAGE_COUNT;
+            pageCount = DEFAULT_PAGE_COUNT;
         }
         List<User> list = new ArrayList();
         try {
@@ -102,10 +115,13 @@ public class UserDAOImpl implements UserDAO {
             if (query.size() != 0) {
                 MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
                 while (cursor.hasNext()) {
-                    String jsonInString = cursor.next().toJson();
-                    Gson g = new GsonBuilder().create();
-                    User user_obj = g.fromJson(jsonInString, User.class);
-                    list.add(user_obj);
+                    Document userDoc = cursor.next();
+                    User user = new User();
+                    user.setId(userDoc.get("_id").toString());
+                    user.setUsername(userDoc.get("username").toString());
+                    user.setPassword(userDoc.get("username").toString());
+                    user.setEmail(userDoc.get("email").toString());
+                    list.add(user);
                 }
             }
             if (list.size() != 0) {
@@ -121,11 +137,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean delete(ObjectId id) throws DataAccessException {
+    public boolean delete(String id) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("users");
             BasicDBObject query = new BasicDBObject();
-            query.put("_id", id);
+            query.put("_id", new ObjectId(id));
             DeleteResult result = collection.deleteOne(query);
             if (result.getDeletedCount() == 0) {
                 return false;
@@ -143,13 +159,13 @@ public class UserDAOImpl implements UserDAO {
     public User save(User user) throws DataAccessException {
         try{
             if (user.getId() == null){
-                user.setId(new ObjectId());
+                user.setId(new ObjectId().toString());
             }
             MongoCollection<Document> collection = database.getCollection("users");
             BasicDBObject newDocument = new BasicDBObject();
             newDocument.append("$set", new BasicDBObject().append("email", user.getEmail()).append("password", user.getPassword()).append("username", user.getUsername()
             ));
-            BasicDBObject searchQuery = new BasicDBObject().append("_id", user.getId());
+            BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(user.getId()));
             UpdateResult result = collection.updateOne(searchQuery, newDocument, (new UpdateOptions()).upsert(true));
             if (result.getModifiedCount() > 0 || result.getUpsertedId() != null){
                 return user;

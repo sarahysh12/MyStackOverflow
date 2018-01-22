@@ -5,7 +5,7 @@ package me.arminb.sara;
  */
 public class constants {
 
-    public static final int PAGE_COUNT = 3;
-    public static final int PAGE_NUMBER = 1;
+    public static final int DEFAULT_PAGE_COUNT = 3;
+    public static final int DEFAULT_PAGE_NUMBER = 1;
 
 }
