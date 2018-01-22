@@ -1,7 +1,5 @@
 package me.arminb.sara.dao;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -9,8 +7,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import me.arminb.sara.entities.Answer;
-import me.arminb.sara.entities.Question;
 import me.arminb.sara.entities.User;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -19,14 +15,10 @@ import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static me.arminb.sara.constants.*;
+import static me.arminb.sara.Constants.*;
 
 @Repository("userDAO")
 public class UserDAOImpl implements UserDAO {

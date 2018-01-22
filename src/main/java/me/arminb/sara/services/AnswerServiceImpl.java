@@ -3,7 +3,6 @@ package me.arminb.sara.services;
 import me.arminb.sara.dao.AnswerDAO;
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.Answer;
-import me.arminb.sara.entities.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +13,9 @@ public class AnswerServiceImpl implements AnswerService{
     private AnswerDAO answerDAO;
 
     @Override
-    public Question saveAnswer(String questionId, Answer answer) throws DataAccessException {
+    public Answer saveAnswer(Answer answer) throws DataAccessException {
         try{
-            return answerDAO.saveAnswer(questionId, answer);
+            return answerDAO.saveAnswer(answer);
         }
         catch (DataAccessException e){
             throw e;

@@ -14,6 +14,8 @@ public class Answer {
 
     private String user;
 
+    private String questionId;
+
     public String getId() {
         return id;
     }
@@ -46,7 +48,6 @@ public class Answer {
         this.comments = comments;
     }
 
-
     public String getUser() {
         return user;
     }
@@ -55,4 +56,11 @@ public class Answer {
         this.user = user;
     }
 
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
 }

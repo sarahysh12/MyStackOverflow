@@ -1,7 +1,6 @@
 package me.arminb.sara.dao;
 
 import me.arminb.sara.entities.User;
-import org.bson.types.ObjectId;
 
 import java.util.List;
 

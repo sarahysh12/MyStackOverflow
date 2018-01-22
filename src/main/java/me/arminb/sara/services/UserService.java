@@ -2,8 +2,6 @@ package me.arminb.sara.services;
 
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
-
-import javax.xml.crypto.Data;
 import java.util.List;
 
 public interface UserService {

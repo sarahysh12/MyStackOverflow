@@ -9,6 +9,8 @@ public class Comment {
 
     private String user;
 
+    private String answerId;
+
     public String getId() {
         return id;
     }
@@ -31,5 +33,13 @@ public class Comment {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(String answerId) {
+        this.answerId = answerId;
     }
 }

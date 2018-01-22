@@ -1,9 +1,6 @@
 package me.arminb.sara.dao;
 
-import me.arminb.sara.entities.Answer;
-import me.arminb.sara.entities.Comment;
 import me.arminb.sara.entities.Question;
-import org.bson.types.ObjectId;
 
 import java.util.List;
 

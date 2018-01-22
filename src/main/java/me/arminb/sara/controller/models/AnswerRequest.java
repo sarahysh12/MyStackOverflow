@@ -16,6 +16,8 @@ public class AnswerRequest {
 
     private String user;
 
+    private String questionId;
+
     public String getAnswer() {
         return answer;
     }
@@ -55,5 +57,13 @@ public class AnswerRequest {
         ans.setRate(rate);
         ans.setComments(comments);
         return ans;
+    }
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
     }
 }

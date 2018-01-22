@@ -5,11 +5,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import me.arminb.sara.entities.Answer;
-import me.arminb.sara.entities.Comment;
 import me.arminb.sara.entities.Question;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -18,13 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.print.Doc;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static me.arminb.sara.constants.*;
+import static me.arminb.sara.Constants.*;
 
 @Repository("questionDAO")
 public class QuestionDAOImpl implements QuestionDAO {
@@ -34,6 +31,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Autowired
     private MongoDatabase database;
 
+    //TODO: Create a method for mapping
 
     @Override
     public List<Question> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {

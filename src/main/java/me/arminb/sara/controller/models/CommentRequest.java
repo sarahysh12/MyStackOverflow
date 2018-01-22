@@ -10,6 +10,8 @@ public class CommentRequest {
 
     private String user;
 
+    private String answerId;
+
     public String getContent() {
         return content;
     }
@@ -31,5 +33,13 @@ public class CommentRequest {
         comment.setUser(user);
         comment.setContent(content);
         return comment;
+    }
+
+    public String getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(String answerId) {
+        this.answerId = answerId;
     }
 }
