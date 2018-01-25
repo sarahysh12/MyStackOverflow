@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 
 @RestController
 @RequestMapping
@@ -18,9 +20,9 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    //@TODO: Add find method
+    //TODO: Add find method
 
-    @RequestMapping(value= "questions/{qid}/answers", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value= "/questions/{qid}/answers", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Answer> addAnswer(@PathVariable("qid") String questionId, @RequestBody AnswerRequest answerReq){
         try{
             Answer answer = answerReq.toAnswer();
@@ -32,15 +34,19 @@ public class AnswerController {
         }
     }
 
-    @RequestMapping(value="questions/{qid}/answers/{aid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Answer> updateAnswer(@PathVariable("qid") String questionId,
-                                                 @PathVariable("aid") String answerId ,
+    @RequestMapping(value="/answers/{aid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Answer> updateAnswer(@PathVariable("aid") String answerId ,
                                                  @RequestBody AnswerRequest answerReq){
         try{
             Answer answer = answerReq.toAnswer();
             answer.setId(answerId);
-            answer.setQuestionId(questionId);
-            return new ResponseEntity<Answer>(answerService.saveAnswer(answer), HttpStatus.OK);
+            Answer answerResponse = answerService.saveAnswer(answer);
+            if (answerResponse != null){
+                return new ResponseEntity<Answer>(answerResponse, HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<Answer>(HttpStatus.NOT_FOUND);
+            }
         }
         catch (DataAccessException e){
             return new ResponseEntity<Answer>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -48,10 +54,16 @@ public class AnswerController {
 
     }
 
-    @RequestMapping(value="answers/{aid}", method = RequestMethod.DELETE)
+    @RequestMapping(value="/answers/{aid}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteAnswer(@PathVariable("aid") String answerId) {
         try {
-            return new ResponseEntity<Boolean>(answerService.deleteAnswer(answerId), HttpStatus.OK);
+            Boolean answerResponse = answerService.deleteAnswer(answerId);
+            if (answerResponse == false){
+                return new ResponseEntity<Boolean>(answerResponse, HttpStatus.NOT_FOUND);
+            }
+            else{
+                return new ResponseEntity<Boolean>(answerResponse, HttpStatus.OK);
+            }
         }
         catch (DataAccessException e){
             return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);

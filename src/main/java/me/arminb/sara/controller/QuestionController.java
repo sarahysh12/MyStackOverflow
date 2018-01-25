@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -19,18 +20,6 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    @RequestMapping(value="/questions", method = RequestMethod.GET)
-    public ResponseEntity<List<Question>> findAll(@RequestParam(value="page", required=false) Integer pageNumber,
-                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
-        try {
-            List<Question> questions = questionService.findAll(pageNumber, pageCount);
-
-            return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
-        }
-        catch (DataAccessException e){
-            return new ResponseEntity<List<Question>>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @RequestMapping(value="/questions/{id}", method = RequestMethod.GET)
     public ResponseEntity<Question> findById(@PathVariable("id") String id) {
@@ -47,7 +36,7 @@ public class QuestionController {
         }
     }
 
-    @RequestMapping(value="/questions/search",method = RequestMethod.GET)
+    @RequestMapping(value="/questions",method = RequestMethod.GET)
     public  ResponseEntity<List<Question>> find( @RequestParam(value="title", required=false) String title,
                                              @RequestParam(value="tag", required = false) String tag,
                                              @RequestParam(value="page", required = false) Integer pageNumber,
@@ -78,14 +67,15 @@ public class QuestionController {
     }
 
     @RequestMapping(value= "questions/{id}", method = RequestMethod.PUT, consumes =  MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Question> updateQuestion(@PathVariable("id") String id, @RequestBody QuestionRequest questionReq) {
+    public ResponseEntity<Question> updateQuestion(@PathVariable("id") String questionId, @RequestBody QuestionRequest questionReq) {
         try {
             Question question = questionReq.toQuestion();
-            question.setId(id);
-            Question question_obj = questionService.saveQuestion(question);
-            if(question_obj != null) {
-                return new ResponseEntity<Question>(question_obj, HttpStatus.OK);
-            } else {
+            question.setId(questionId);
+            Question questionResponse = questionService.saveQuestion(question);
+            if(questionResponse != null) {
+                return new ResponseEntity<Question>(questionResponse, HttpStatus.OK);
+            }
+            else {
                 return new ResponseEntity<Question>(HttpStatus.NOT_FOUND);
             }
         }
@@ -95,9 +85,15 @@ public class QuestionController {
     }
 
     @RequestMapping(value="questions/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteQuestion(@PathVariable("id") String id) {
+    public ResponseEntity<Boolean> deleteQuestion(@PathVariable("id") String questionId) {
         try {
-            return new ResponseEntity<Boolean>(questionService.deleteQuestion(id), HttpStatus.OK);
+            Boolean questionResponse = questionService.deleteQuestion(questionId);
+            if (questionResponse == false) {
+                return new ResponseEntity<Boolean>(questionResponse, HttpStatus.NOT_FOUND);
+            }
+            else {
+                return new ResponseEntity<Boolean>(questionResponse, HttpStatus.OK);
+            }
         }
         catch (DataAccessException e){
             return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);

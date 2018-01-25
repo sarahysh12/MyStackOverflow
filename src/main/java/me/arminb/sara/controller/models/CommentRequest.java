@@ -2,15 +2,16 @@ package me.arminb.sara.controller.models;
 
 
 import me.arminb.sara.entities.Comment;
-import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 public class CommentRequest {
+
+    //TODO: user id should be taken from request after implementing login
 
     private String content;
 
     private String user;
-
-    private String answerId;
 
     public String getContent() {
         return content;
@@ -32,14 +33,8 @@ public class CommentRequest {
         Comment comment = new Comment();
         comment.setUser(user);
         comment.setContent(content);
+        comment.setModifiedAt(new Date());
         return comment;
     }
 
-    public String getAnswerId() {
-        return answerId;
-    }
-
-    public void setAnswerId(String answerId) {
-        this.answerId = answerId;
-    }
 }

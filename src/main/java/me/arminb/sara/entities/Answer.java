@@ -2,9 +2,8 @@ package me.arminb.sara.entities;
 
 import java.util.List;
 
-public class Answer {
+public class Answer extends BaseEntity{
 
-    private String id;
 
     private String answer;
 
@@ -14,15 +13,7 @@ public class Answer {
 
     private String user;
 
-    private String questionId;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private String question;
 
     public String getAnswer() {
         return answer;
@@ -57,10 +48,10 @@ public class Answer {
     }
 
     public String getQuestionId() {
-        return questionId;
+        return question;
     }
 
     public void setQuestionId(String questionId) {
-        this.questionId = questionId;
+        this.question = questionId;
     }
 }

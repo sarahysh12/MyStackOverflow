@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping
 public class CommentController {
@@ -18,7 +20,7 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @RequestMapping(value= "answers/{aid}", method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value= "/answers/{aid}/comments", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Comment> addComment(@PathVariable("aid") String answerId, @RequestBody CommentRequest commentReq){
         try{
             Comment comment = commentReq.toComment();
@@ -30,25 +32,34 @@ public class CommentController {
         }
     }
 
-    @RequestMapping(value="answers/{aid}/comments/{cid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Comment> updateComment(@PathVariable("aid") String answerId ,
-                                                  @PathVariable("cid") String commentId ,
+    @RequestMapping(value="/comments/{cid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Comment> updateComment(@PathVariable("cid") String commentId ,
                                                   @RequestBody CommentRequest commentReq){
         try{
             Comment comment = commentReq.toComment();
             comment.setId(commentId);
-            comment.setAnswerId(answerId);
-            return new ResponseEntity<Comment>(commentService.saveComment(comment), HttpStatus.OK);
+            Comment commentResponse = commentService.saveComment(comment);
+            if (commentResponse == null){
+                return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
+            }
+            else {
+                 return new ResponseEntity<Comment>(HttpStatus.OK);
+             }
         }
         catch (DataAccessException e){
             return new ResponseEntity<Comment>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping(value="comments/{cid}", method = RequestMethod.DELETE)
+    @RequestMapping(value="/comments/{cid}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteComment(@PathVariable("cid") String commentId) {
         try {
-            return new ResponseEntity<Boolean>(commentService.deleteComment(commentId), HttpStatus.OK);
+            Boolean commentResponse = commentService.deleteComment(commentId);
+            if(commentResponse == false){
+                return new ResponseEntity<Boolean>(commentResponse, HttpStatus.NOT_FOUND);
+            }else {
+                return new ResponseEntity<Boolean>(commentResponse, HttpStatus.OK);
+            }
         }
         catch (DataAccessException e){
             return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,23 +1,13 @@
 package me.arminb.sara.entities;
 
 
-public class Comment {
-
-    private String id;
+public class Comment extends BaseEntity{
 
     private String content;
 
     private String user;
 
-    private String answerId;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private String answer;
 
     public String getContent() {
         return content;
@@ -36,10 +26,10 @@ public class Comment {
     }
 
     public String getAnswerId() {
-        return answerId;
+        return answer;
     }
 
     public void setAnswerId(String answerId) {
-        this.answerId = answerId;
+        this.answer = answerId;
     }
 }

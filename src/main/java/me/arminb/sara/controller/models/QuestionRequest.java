@@ -14,21 +14,11 @@ import java.util.List;
 
 public class QuestionRequest {
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    private Date date;
+    //TODO: user id should be taken from request after implementing login
 
     private String title;
 
     private String content;
-
-    private List<Answer> answers;
 
     private int rate;
 
@@ -50,29 +40,6 @@ public class QuestionRequest {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        String arrayToJson = null;
-        try {
-            arrayToJson = objectMapper.writeValueAsString(answers);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        TypeReference<Answer> mapType = new TypeReference<Answer>() {};
-        try {
-            Answer jsonToPersonList = objectMapper.readValue(arrayToJson, mapType);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public int getRate() {
@@ -103,9 +70,9 @@ public class QuestionRequest {
         Question question = new Question();
         question.setTitle(title);
         question.setRate(rate);
-        question.setDate(new Date());
         question.setContent(content);
-        question.setAnswers(answers);
+        question.setModifiedAt(new Date());
+        //question.setCreatedAt(?);
         question.setUser(user);
         question.setTags(tags);
         return question;

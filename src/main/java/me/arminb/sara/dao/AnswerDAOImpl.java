@@ -8,12 +8,16 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import me.arminb.sara.entities.Answer;
+import me.arminb.sara.entities.Comment;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 
 @Repository("answerDAO")
@@ -25,28 +29,36 @@ public class AnswerDAOImpl implements AnswerDAO {
     private MongoDatabase database;
 
 
-    //@TODO: Check answer exists with findbyId (return not found to user)
-    //@TODO: Exception Handling
     @Override
     public Answer saveAnswer(Answer answer) throws DataAccessException {
-        MongoCollection<Document> collection = database.getCollection("questions");
-        if (answer.getId() == null) {
-            answer.setId(new ObjectId().toString());
-            Document doc = new Document().append("answer_id", new ObjectId(answer.getId())).append("answer", answer.getAnswer()).append("rate", answer.getRate())
-                    .append("comments", answer.getComments()).append("user", answer.getUser());
-            BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(answer.getQuestionId()));
-            UpdateResult result = collection.updateOne(searchQuery, Updates.addToSet("answers", doc));
+        try {
+            MongoCollection<Document> collection = database.getCollection("questions");
+            if (answer.getId() == null) {
+                answer.setId(new ObjectId().toString());
+                answer.setCreatedAt(new Date());
+                Document doc = new Document().append("answer_id", new ObjectId(answer.getId())).append("answer", answer.getAnswer())
+                        .append("rate", answer.getRate()).append("comments", new ArrayList<Comment>()).append("user", answer.getUser())
+                        .append("created_date", answer.getCreatedAt()).append("modified_date", answer.getModifiedAt());
+                BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(answer.getQuestionId()));
+                collection.updateOne(searchQuery, Updates.addToSet("answers", doc));
+            } else {
+                BasicDBObject newDocument = new BasicDBObject();
+                newDocument.append("$set", new BasicDBObject().append("answers.$.answer", answer.getAnswer()).append("answers.$.rate", answer.getRate())
+                        .append("answers.$.comments", answer.getComments()).append("answers.$.user", answer.getUser())
+                );
+                BasicDBObject searchQuery = new BasicDBObject().append("answers.answer_id", new ObjectId(answer.getId()));
+                Document result = collection.findOneAndUpdate(searchQuery, newDocument);
+                if (result == null) {
+                    answer = null;
+                }
+            }
+            return answer;
         }
-        else{
-            BasicDBObject newDocument = new BasicDBObject();
-            newDocument.append("$set", new BasicDBObject().append("answers.$.answer", answer.getAnswer()).append("answers.$.rate", answer.getRate())
-                    .append("answers.$.comments", answer.getComments()).append("answers.$.user", answer.getUser())
-            );
-            BasicDBObject searchQuery = new BasicDBObject().append("answers.answer_id", new ObjectId(answer.getId()));
-            collection.findOneAndUpdate(searchQuery, newDocument);
+        catch(MongoException e){
+                logger.warn("Failed to upsert the answer to the database", e);
+                throw new DataAccessException();
+            }
         }
-        return answer;
-    }
 
     @Override
     public boolean deleteAnswer(String answerId) throws DataAccessException{
@@ -62,7 +74,7 @@ public class AnswerDAOImpl implements AnswerDAO {
                 return false;
             }
         } catch(MongoException e){
-            logger.warn("Failed to delete the question from the database", e);
+            logger.warn("Failed to delete the answer from the database", e);
             throw new DataAccessException();
         }
     }

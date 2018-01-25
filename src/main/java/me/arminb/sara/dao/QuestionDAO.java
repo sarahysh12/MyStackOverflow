@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface QuestionDAO{
 
-        public List<Question> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException;
         public Question findById(String id) throws DataAccessException;
         public List<Question> find(String title, String tag, Integer pageNumber, Integer pageCount) throws DataAccessException;
         public Question saveQuestion(Question question) throws DataAccessException;

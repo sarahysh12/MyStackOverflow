@@ -3,10 +3,13 @@ package me.arminb.sara.controller.models;
 import me.arminb.sara.entities.Answer;
 import me.arminb.sara.entities.Comment;
 
+import java.util.Date;
 import java.util.List;
 
 
 public class AnswerRequest {
+
+    //TODO: user id should be taken from request after implementing login
 
     private String answer;
 
@@ -15,8 +18,6 @@ public class AnswerRequest {
     private List<Comment> comments;
 
     private String user;
-
-    private String questionId;
 
     public String getAnswer() {
         return answer;
@@ -56,14 +57,8 @@ public class AnswerRequest {
         ans.setUser(user);
         ans.setRate(rate);
         ans.setComments(comments);
+        ans.setModifiedAt(new Date());
         return ans;
     }
 
-    public String getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(String questionId) {
-        this.questionId = questionId;
-    }
 }

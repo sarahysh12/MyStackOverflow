@@ -1,22 +1,8 @@
 package me.arminb.sara.entities;
 
-
-import java.util.Date;
 import java.util.List;
 
-public class Question {
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    private Date date;
-
-    private String id;
+public class Question extends BaseEntity{
 
     private String title;
 
@@ -29,14 +15,6 @@ public class Question {
     private List<String> tags;
 
     private String user;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;

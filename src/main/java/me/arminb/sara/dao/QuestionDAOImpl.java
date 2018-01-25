@@ -4,9 +4,11 @@ import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.sun.javadoc.Doc;
 import me.arminb.sara.entities.Answer;
 import me.arminb.sara.entities.Question;
 import org.bson.Document;
@@ -31,59 +33,40 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Autowired
     private MongoDatabase database;
 
-    //TODO: Create a method for mapping
 
-    @Override
-    public List<Question> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
-        if (pageNumber == null){
-            pageNumber = DEFAULT_PAGE_NUMBER;
-        }
-        if (pageCount == null){
-            pageCount = DEFAULT_PAGE_COUNT;
-        }
-        List<Question> list = new ArrayList();
+    private Question mapQuestion(Document questionDoc){
+
+        Question question = new Question();
+
+        DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+        Date createDate = null;
+        Date modifiedDate = null;
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
-            MongoCursor<Document> iterator = collection.find().skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
-            while (iterator.hasNext()) {
-
-                Document questionDoc = iterator.next();
-                Question question = new Question();
-
-                //Date
-                DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-                Date date = null;
-                try {
-                    date = format.parse(questionDoc.get("date").toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                List<String> tagList = (List<String>) questionDoc.get("tags");
-                question.setTags(tagList);
-
-                question.setId(questionDoc.get("_id").toString());
-                question.setDate(date);
-                question.setContent(questionDoc.get("content").toString());
-                question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
-                question.setTitle(questionDoc.get("title").toString());
-                question.setUser(questionDoc.get("user").toString());
-
-                List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
-                question.setAnswers(ansList);
-
-                list.add(question);
+            if (questionDoc.get("created_date") != null){
+                createDate = format.parse(questionDoc.get("created_date").toString());
             }
-            if (list.size() != 0) {
-                return list;
+            if (questionDoc.get("modified_date") != null) {
+                modifiedDate = format.parse(questionDoc.get("modified_date").toString());
             }
-            else {
-                return null;
-            }
-        } catch (MongoException e) {
-            logger.warn("Failed to fetch questions from the database", e);
-            throw new DataAccessException();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+        List<String> tagList = (List<String>) questionDoc.get("tags");
+        question.setTags(tagList);
+
+        question.setId(questionDoc.get("_id").toString());
+        question.setCreatedAt(createDate);
+        question.setModifiedAt(modifiedDate);
+        question.setContent(questionDoc.get("content").toString());
+        question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
+        question.setTitle(questionDoc.get("title").toString());
+        question.setUser(questionDoc.get("user").toString());
+
+        List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
+        question.setAnswers(ansList);
+
+        return question;
     }
 
     @Override
@@ -95,32 +78,10 @@ public class QuestionDAOImpl implements QuestionDAO {
             MongoCursor<Document> cursor = collection.find(query).iterator();
             if (cursor.hasNext()) {
                 Document questionDoc = cursor.next();
-                Question question = new Question();
-
-                //Date
-                DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-                Date date = null;
-                try {
-                    date = format.parse(questionDoc.get("date").toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                List<String> tagList = (List<String>) questionDoc.get("tags");
-                question.setTags(tagList);
-
-                question.setId(questionDoc.get("_id").toString());
-                question.setDate(date);
-                question.setContent(questionDoc.get("content").toString());
-                question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
-                question.setTitle(questionDoc.get("title").toString());
-                question.setUser(questionDoc.get("user").toString());
-
-                List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
-                question.setAnswers(ansList);
-
+                Question question = mapQuestion(questionDoc);
                 return question;
-            }else{
+            }
+            else{
                 return null;
             }
         } catch (MongoException e) {
@@ -147,36 +108,11 @@ public class QuestionDAOImpl implements QuestionDAO {
             if (tag != null) {
                 query.append("tags", tag);
             }
-            if (query.size() != 0) {
-                MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
-                while (cursor.hasNext()) {
-                    Document questionDoc = cursor.next();
-                    Question question = new Question();
-
-                    //Date
-                    DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-                    Date date = null;
-                    try {
-                        date = format.parse(questionDoc.get("date").toString());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                    List<String> tagList = (List<String>) questionDoc.get("tags");
-                    question.setTags(tagList);
-
-                    question.setId(questionDoc.get("_id").toString());
-                    question.setDate(date);
-                    question.setContent(questionDoc.get("content").toString());
-                    question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
-                    question.setTitle(questionDoc.get("title").toString());
-                    question.setUser(questionDoc.get("user").toString());
-
-                    List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
-                    question.setAnswers(ansList);
-
-                    list.add(question);
-                }
+            MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
+            while (cursor.hasNext()) {
+                Document questionDoc = cursor.next();
+                Question question = mapQuestion(questionDoc);
+                list.add(question);
             }
             if (list.size() != 0) {
                 return list;
@@ -185,7 +121,7 @@ public class QuestionDAOImpl implements QuestionDAO {
                 return null;
             }
         } catch (MongoException e) {
-            logger.warn("Failed to search questions on the database", e);
+            logger.warn("Failed to find questions on the database", e);
             throw new DataAccessException();
         }
     }
@@ -193,24 +129,29 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public Question saveQuestion(Question question) throws DataAccessException {
         try{
+            MongoCollection<Document> collection = database.getCollection("questions");
+
             if (question.getId() == null){
                 question.setId(new ObjectId().toString());
-            }
-
-            MongoCollection<Document> collection = database.getCollection("questions");
-            BasicDBObject newDocument = new BasicDBObject();
-            newDocument.append("$set", new BasicDBObject().append("title", question.getTitle()).append("rate", question.getRate())
-                    .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
-                    .append("date", question.getDate()).append("tags", question.getTags())
-            );
-            BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(question.getId()));
-            UpdateResult result = collection.updateOne(searchQuery, newDocument, (new UpdateOptions()).upsert(true));
-            if (result.getModifiedCount() > 0 || result.getUpsertedId() != null){
-                return question;
+                question.setCreatedAt(new Date());
+                Document doc = new Document("_id", new ObjectId(question.getId())).append("title", question.getTitle()).append("rate", question.getRate())
+                        .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
+                        .append("tags", question.getTags()).append("modified_date", question.getModifiedAt()).append("created_date", question.getCreatedAt());
+                collection.insertOne(doc);
             }
             else{
-                return null;
+                BasicDBObject newDocument = new BasicDBObject();
+                newDocument.append("$set", new BasicDBObject().append("title", question.getTitle()).append("rate", question.getRate())
+                        .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
+                        .append("tags", question.getTags()).append("modified_date", question.getModifiedAt()).append("created_date", question.getCreatedAt())
+                );
+                BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(question.getId()));
+                Document result = collection.findOneAndUpdate(searchQuery, newDocument);
+                if (result == null){
+                    question = null;
+                }
             }
+            return question;
         }
         catch(MongoException e){
             logger.warn("Failed to upsert the question to the database", e);

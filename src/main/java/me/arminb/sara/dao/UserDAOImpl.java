@@ -4,6 +4,7 @@ import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -15,7 +16,11 @@ import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static me.arminb.sara.Constants.*;
@@ -28,38 +33,28 @@ public class UserDAOImpl implements UserDAO {
     @Autowired
     private MongoDatabase database;
 
-    @Override
-    public List<User> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
-        if (pageNumber == null){
-            pageNumber = DEFAULT_PAGE_NUMBER;
-        }
-        if (pageCount == null){
-            pageCount = DEFAULT_PAGE_COUNT;
-        }
-        List<User> list = new ArrayList();
+    private User mapUser(Document userDoc){
+        User user = new User();
+        DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+        Date createDate = null;
+        Date modifiedDate = null;
         try {
-            MongoCollection<Document> collection = database.getCollection("users");
-            MongoCursor<Document> iterator = collection.find().skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
-            while (iterator.hasNext()) {
-
-                Document userDoc = iterator.next();
-                User user = new User();
-                user.setId(userDoc.get("_id").toString());
-                user.setUsername(userDoc.get("username").toString());
-                user.setPassword(userDoc.get("username").toString());
-                user.setEmail(userDoc.get("email").toString());
-                list.add(user);
+            if (userDoc.get("created_date") != null){
+            createDate = format.parse(userDoc.get("created_date").toString());
             }
-            if (list.size() != 0) {
-                return list;
+            if (userDoc.get("modified_date") != null) {
+                modifiedDate = format.parse(userDoc.get("modified_date").toString());
             }
-            else {
-                return null;
-            }
-        } catch (MongoException e) {
-            logger.warn("Failed to fetch users from the database", e);
-            throw new DataAccessException();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        user.setId(userDoc.get("_id").toString());
+        user.setUsername(userDoc.get("username").toString());
+        user.setPassword(userDoc.get("password").toString());
+        user.setEmail(userDoc.get("email").toString());
+        user.setCreatedAt(createDate);
+        user.setModifiedAt(modifiedDate);
+        return user;
     }
 
     @Override
@@ -71,11 +66,7 @@ public class UserDAOImpl implements UserDAO {
             MongoCursor<Document> cursor = collection.find(query).iterator();
             if (cursor.hasNext()) {
                 Document userDoc = cursor.next();
-                User user = new User();
-                user.setId(userDoc.get("_id").toString());
-                user.setUsername(userDoc.get("username").toString());
-                user.setPassword(userDoc.get("username").toString());
-                user.setEmail(userDoc.get("email").toString());
+                User user = mapUser(userDoc);
                 return user;
             }else{
                 return null;
@@ -104,17 +95,11 @@ public class UserDAOImpl implements UserDAO {
             if (email != null) {
                 query.append("email", email);
             }
-            if (query.size() != 0) {
-                MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
-                while (cursor.hasNext()) {
-                    Document userDoc = cursor.next();
-                    User user = new User();
-                    user.setId(userDoc.get("_id").toString());
-                    user.setUsername(userDoc.get("username").toString());
-                    user.setPassword(userDoc.get("username").toString());
-                    user.setEmail(userDoc.get("email").toString());
-                    list.add(user);
-                }
+            MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
+            while (cursor.hasNext()) {
+                Document userDoc = cursor.next();
+                User user = mapUser(userDoc);
+                list.add(user);
             }
             if (list.size() != 0) {
                 return list;
@@ -123,13 +108,46 @@ public class UserDAOImpl implements UserDAO {
                 return null;
             }
         } catch (MongoException e) {
-            logger.warn("Failed to search users on the database", e);
+            logger.warn("Failed to find users on the database", e);
             throw new DataAccessException();
         }
     }
 
+
     @Override
-    public boolean delete(String id) throws DataAccessException {
+    public User saveUser(User user) throws DataAccessException {
+        try{
+            MongoCollection<Document> collection = database.getCollection("users");
+
+            if (user.getId() == null){
+                user.setId(new ObjectId().toString());
+                user.setCreatedAt(new Date());
+                Document doc = new Document("_id", new ObjectId(user.getId())).append("email", user.getEmail()).append("password", user.getPassword())
+                        .append("username", user.getUsername()).append("created_date", user.getCreatedAt()).append("modified_date", user.getModifiedAt());
+                collection.insertOne(doc);
+            }
+            else{
+                BasicDBObject newDocument = new BasicDBObject();
+                newDocument.append("$set", new BasicDBObject().append("email", user.getEmail()).append("password", user.getPassword())
+                        .append("username", user.getUsername()).append("created_date", user.getCreatedAt()).append("modified_date", user.getModifiedAt())
+                );
+                BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(user.getId()));
+                Document result = collection.findOneAndUpdate(searchQuery, newDocument);
+                if (result == null){
+                    user = null;
+                }
+            }
+            return user;
+        }
+        catch(MongoException e){
+            logger.warn("Failed to upsert the user to the database", e);
+            throw new DataAccessException();
+        }
+    }
+
+
+    @Override
+    public boolean deleteUser(String id) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("users");
             BasicDBObject query = new BasicDBObject();
@@ -143,31 +161,6 @@ public class UserDAOImpl implements UserDAO {
             }
         } catch(MongoException e){
             logger.warn("Failed to delete the user from the database", e);
-            throw new DataAccessException();
-        }
-    }
-
-    @Override
-    public User save(User user) throws DataAccessException {
-        try{
-            if (user.getId() == null){
-                user.setId(new ObjectId().toString());
-            }
-            MongoCollection<Document> collection = database.getCollection("users");
-            BasicDBObject newDocument = new BasicDBObject();
-            newDocument.append("$set", new BasicDBObject().append("email", user.getEmail()).append("password", user.getPassword()).append("username", user.getUsername()
-            ));
-            BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(user.getId()));
-            UpdateResult result = collection.updateOne(searchQuery, newDocument, (new UpdateOptions()).upsert(true));
-            if (result.getModifiedCount() > 0 || result.getUpsertedId() != null){
-                return user;
-            }
-            else{
-                return null;
-            }
-        }
-        catch(MongoException e){
-            logger.warn("Failed to upsert the user to the database", e);
             throw new DataAccessException();
         }
     }

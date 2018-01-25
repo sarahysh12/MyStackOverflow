@@ -16,16 +16,6 @@ public class QuestionServiceImpl implements QuestionService{
     private QuestionDAO questionDAO;
 
     @Override
-    public List<Question> findAll(Integer pageNumber, Integer pageCount) throws DataAccessException {
-        try{
-            return questionDAO.findAll(pageNumber, pageCount);
-        }
-        catch(DataAccessException e){
-            throw e;
-        }
-    }
-
-    @Override
     public Question findById(String id) throws DataAccessException {
         try{
             return questionDAO.findById(id);
