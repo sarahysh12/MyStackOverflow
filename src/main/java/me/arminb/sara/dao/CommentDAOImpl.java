@@ -22,6 +22,7 @@ import java.util.Date;
 @Repository("commentDAO")
 public class CommentDAOImpl implements CommentDAO {
 
+    private final static String COLLECTION_NAME = "questions";
     Logger logger = LoggerFactory.getLogger(QuestionDAOImpl.class);
 
     @Autowired
@@ -30,7 +31,7 @@ public class CommentDAOImpl implements CommentDAO {
     @Override
     public Comment save(Comment comment) throws DataAccessException {
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             if (comment.getId() == null) {
                 comment.setId(new ObjectId().toString());
                 Document doc = new Document().append("comment_id", new ObjectId(comment.getId())).append("content", comment.getContent())
@@ -61,7 +62,7 @@ public class CommentDAOImpl implements CommentDAO {
     @Override
     public boolean delete(String commentId) throws DataAccessException{
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject("answers.comments.comment_id", new ObjectId(commentId));
             BasicDBObject comments = new BasicDBObject("answers.$.comments", new BasicDBObject( "comment_id",  new ObjectId(commentId)));
             BasicDBObject update = new BasicDBObject("$pull",comments);

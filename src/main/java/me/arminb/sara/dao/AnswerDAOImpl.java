@@ -23,6 +23,7 @@ import java.util.Date;
 @Repository("answerDAO")
 public class AnswerDAOImpl implements AnswerDAO {
 
+    private final static String COLLECTION_NAME = "questions";
     Logger logger = LoggerFactory.getLogger(QuestionDAOImpl.class);
 
     @Autowired
@@ -32,7 +33,7 @@ public class AnswerDAOImpl implements AnswerDAO {
     @Override
     public Answer save(Answer answer) throws DataAccessException {
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             if (answer.getId() == null) {
                 answer.setId(new ObjectId().toString());
                 Document doc = new Document().append("answer_id", new ObjectId(answer.getId())).append("answer", answer.getAnswer())
@@ -62,7 +63,7 @@ public class AnswerDAOImpl implements AnswerDAO {
     @Override
     public boolean delete(String answerId) throws DataAccessException{
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject("answers.answer_id", new ObjectId(answerId));
             BasicDBObject answer = new BasicDBObject("answers", new BasicDBObject( "answer_id",  new ObjectId(answerId)));
             BasicDBObject update = new BasicDBObject("$pull",answer);

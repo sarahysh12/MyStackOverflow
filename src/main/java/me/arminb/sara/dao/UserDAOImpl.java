@@ -28,6 +28,7 @@ import static me.arminb.sara.Constants.*;
 @Repository("userDAO")
 public class UserDAOImpl implements UserDAO {
 
+    private final static String COLLECTION_NAME = "users";
     Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     @Autowired
@@ -55,7 +56,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User findById(String id) throws DataAccessException {
         try {
-            MongoCollection<Document> collection = database.getCollection("users");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject();
             query.append("_id", new ObjectId(id));
             MongoCursor<Document> cursor = collection.find(query).iterator();
@@ -82,7 +83,7 @@ public class UserDAOImpl implements UserDAO {
         }
         List<User> list = new ArrayList();
         try {
-            MongoCollection<Document> collection = database.getCollection("users");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject();
             if (username != null) {
                 query.append("username", new BasicDBObject("$regex", ".*" + username + ".*"));
@@ -112,7 +113,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User save(User user) throws DataAccessException {
         try{
-            MongoCollection<Document> collection = database.getCollection("users");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
             if (user.getId() == null){
                 user.setId(new ObjectId().toString());
@@ -143,7 +144,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean delete(String id) throws DataAccessException {
         try {
-            MongoCollection<Document> collection = database.getCollection("users");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
             DeleteResult result = collection.deleteOne(query);

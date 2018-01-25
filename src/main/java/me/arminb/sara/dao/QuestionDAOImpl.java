@@ -24,6 +24,7 @@ import static me.arminb.sara.Constants.*;
 @Repository("questionDAO")
 public class QuestionDAOImpl implements QuestionDAO {
 
+    private final static String COLLECTION_NAME = "questions";
     Logger logger = LoggerFactory.getLogger(QuestionDAOImpl.class);
 
     @Autowired
@@ -63,7 +64,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public Question findById(String id) throws DataAccessException {
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject();
             query.append("_id", new ObjectId(id));
             MongoCursor<Document> cursor = collection.find(query).iterator();
@@ -91,7 +92,7 @@ public class QuestionDAOImpl implements QuestionDAO {
         }
         List<Question> list = new ArrayList();
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject();
             if (title != null) {
                 query.append("title", new BasicDBObject("$regex", ".*" + title + ".*"));
@@ -120,7 +121,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public Question save(Question question) throws DataAccessException {
         try{
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
             if (question.getId() == null){
                 question.setId(new ObjectId().toString());
@@ -132,7 +133,8 @@ public class QuestionDAOImpl implements QuestionDAO {
             else{
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("title", question.getTitle()).append("rate", question.getRate())
-                        .append("content", question.getContent()).append("user", question.getUser()).append("tags", question.getTags()).append("modified_date", question.getModifiedAt())
+                        .append("content", question.getContent()).append("user", question.getUser()).append("tags", question.getTags())
+                        .append("modified_date", question.getModifiedAt())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(question.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);
@@ -151,7 +153,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Override
     public boolean delete(String id) throws DataAccessException {
         try {
-            MongoCollection<Document> collection = database.getCollection("questions");
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
             DeleteResult result = collection.deleteOne(query);
