@@ -16,7 +16,7 @@ public class QuestionServiceImpl implements QuestionService{
     private QuestionDAO questionDAO;
 
     @Override
-    public Question findById(String id) throws DataAccessException {
+    public Question findQuestionById(String id) throws DataAccessException {
         try{
             return questionDAO.findById(id);
         }catch(DataAccessException e){
@@ -25,7 +25,7 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    public List<Question> find(String title, String tag, Integer pageNumber, Integer pageCount) throws DataAccessException {
+    public List<Question> findQuestion(String title, String tag, Integer pageNumber, Integer pageCount) throws DataAccessException {
         try{
             return questionDAO.find(title, tag, pageNumber, pageCount);
         }
@@ -37,7 +37,7 @@ public class QuestionServiceImpl implements QuestionService{
     @Override
     public Question saveQuestion(Question question) throws DataAccessException {
         try{
-            return questionDAO.saveQuestion(question);
+            return questionDAO.save(question);
         }
         catch(DataAccessException e){
             throw e;
@@ -47,7 +47,7 @@ public class QuestionServiceImpl implements QuestionService{
     @Override
     public boolean deleteQuestion(String id) throws DataAccessException {
         try{
-            return questionDAO.deleteQuestion(id);
+            return questionDAO.delete(id);
         }
         catch(DataAccessException e){
             throw e;

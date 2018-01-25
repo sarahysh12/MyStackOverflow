@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface UserService {
 
-    public User findById(String id) throws DataAccessException;
-    public List<User> find(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException;
+    public User findUserById(String id) throws DataAccessException;
+    public List<User> findUser(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException;
     public boolean deleteUser(String id) throws DataAccessException;
     public User saveUser(User user) throws DataAccessException;
 

@@ -4,11 +4,7 @@ import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
-import com.sun.javadoc.Doc;
 import me.arminb.sara.entities.Answer;
 import me.arminb.sara.entities.Question;
 import org.bson.Document;
@@ -127,7 +123,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     }
 
     @Override
-    public Question saveQuestion(Question question) throws DataAccessException {
+    public Question save(Question question) throws DataAccessException {
         try{
             MongoCollection<Document> collection = database.getCollection("questions");
 
@@ -160,7 +156,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     }
 
     @Override
-    public boolean deleteQuestion(String id) throws DataAccessException {
+    public boolean delete(String id) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("questions");
             BasicDBObject query = new BasicDBObject();

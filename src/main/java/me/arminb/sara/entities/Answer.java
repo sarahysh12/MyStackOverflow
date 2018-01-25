@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Answer extends BaseEntity{
 
-
     private String answer;
 
     private int rate;

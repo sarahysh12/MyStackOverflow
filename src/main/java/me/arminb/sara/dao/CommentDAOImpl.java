@@ -28,7 +28,7 @@ public class CommentDAOImpl implements CommentDAO {
     private MongoDatabase database;
 
     @Override
-    public Comment saveComment(Comment comment) throws DataAccessException {
+    public Comment save(Comment comment) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("questions");
             if (comment.getId() == null) {
@@ -46,7 +46,7 @@ public class CommentDAOImpl implements CommentDAO {
                         .append("comments.$.user", comment.getUser()).append("comments.$.created_date", comment.getCreatedAt())
                         .append("comments.$.modified_date", comment.getModifiedAt())
                 );
-                BasicDBObject searchQuery = new BasicDBObject().append("answers.comments.comment_id", new ObjectId(comment.getId()));
+                BasicDBObject searchQuery = new BasicDBObject().append("answers.comments.$.comment_id", new ObjectId(comment.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);
                 if (result == null) {
                     comment = null;
@@ -60,7 +60,7 @@ public class CommentDAOImpl implements CommentDAO {
     }
 
     @Override
-    public boolean deleteComment(String commentId) throws DataAccessException{
+    public boolean delete(String commentId) throws DataAccessException{
         try {
             MongoCollection<Document> collection = database.getCollection("questions");
             BasicDBObject query = new BasicDBObject("answers.comments.comment_id", new ObjectId(commentId));

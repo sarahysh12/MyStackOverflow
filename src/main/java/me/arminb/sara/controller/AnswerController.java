@@ -10,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-
 
 @RestController
 @RequestMapping
@@ -36,7 +34,7 @@ public class AnswerController {
 
     @RequestMapping(value="/answers/{aid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Answer> updateAnswer(@PathVariable("aid") String answerId ,
-                                                 @RequestBody AnswerRequest answerReq){
+                                               @RequestBody AnswerRequest answerReq){
         try{
             Answer answer = answerReq.toAnswer();
             answer.setId(answerId);
@@ -55,18 +53,18 @@ public class AnswerController {
     }
 
     @RequestMapping(value="/answers/{aid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteAnswer(@PathVariable("aid") String answerId) {
+    public ResponseEntity deleteAnswer(@PathVariable("aid") String answerId) {
         try {
             Boolean answerResponse = answerService.deleteAnswer(answerId);
             if (answerResponse == false){
-                return new ResponseEntity<Boolean>(answerResponse, HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             else{
-                return new ResponseEntity<Boolean>(answerResponse, HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.OK);
             }
         }
         catch (DataAccessException e){
-            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

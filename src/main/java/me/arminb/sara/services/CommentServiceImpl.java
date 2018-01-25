@@ -15,7 +15,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public Comment saveComment(Comment comment) throws DataAccessException {
         try{
-            return commentDAO.saveComment(comment);
+            return commentDAO.save(comment);
         }
         catch (DataAccessException e){
             throw e;
@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public boolean deleteComment(String commentId) throws DataAccessException {
         try{
-            return commentDAO.deleteComment(commentId);
+            return commentDAO.delete(commentId);
         }
         catch(DataAccessException e){
             throw e;

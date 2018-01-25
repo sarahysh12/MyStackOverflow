@@ -1,11 +1,14 @@
 package me.arminb.sara.entities;
 
+import org.bson.types.ObjectId;
+
 import java.util.Date;
 
-public class BaseEntity {
-    private String id;
-    private Date createdAt;
-    private Date modifiedAt;
+public abstract class BaseEntity {
+
+    protected String id;
+    protected Date createdAt;
+    protected Date modifiedAt;
 
     public String getId() {
         return id;
@@ -29,5 +32,13 @@ public class BaseEntity {
 
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public void changeModifiedDate(){
+        modifiedAt = new Date();
+    }
+
+    public void setCreationDate(){
+        createdAt = new ObjectId(id).getDate();
     }
 }

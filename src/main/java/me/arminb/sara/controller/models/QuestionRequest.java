@@ -1,13 +1,7 @@
 package me.arminb.sara.controller.models;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import me.arminb.sara.entities.Answer;
 import me.arminb.sara.entities.Question;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -71,8 +65,6 @@ public class QuestionRequest {
         question.setTitle(title);
         question.setRate(rate);
         question.setContent(content);
-        question.setModifiedAt(new Date());
-        //question.setCreatedAt(?);
         question.setUser(user);
         question.setTags(tags);
         return question;

@@ -41,7 +41,6 @@ public class UserRequest {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
-        user.setModifiedAt(new Date());
         return user;
     }
 }

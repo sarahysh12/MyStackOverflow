@@ -33,7 +33,6 @@ public class CommentRequest {
         Comment comment = new Comment();
         comment.setUser(user);
         comment.setContent(content);
-        comment.setModifiedAt(new Date());
         return comment;
     }
 

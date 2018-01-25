@@ -5,6 +5,6 @@ import me.arminb.sara.entities.Answer;
 
 public interface AnswerDAO {
 
-    public Answer saveAnswer(Answer answer) throws DataAccessException;
-    public boolean deleteAnswer(String answerId) throws DataAccessException;
+    public Answer save(Answer answer) throws DataAccessException;
+    public boolean delete(String answerId) throws DataAccessException;
 }

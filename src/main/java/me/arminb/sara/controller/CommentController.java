@@ -52,17 +52,17 @@ public class CommentController {
     }
 
     @RequestMapping(value="/comments/{cid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteComment(@PathVariable("cid") String commentId) {
+    public ResponseEntity deleteComment(@PathVariable("cid") String commentId) {
         try {
             Boolean commentResponse = commentService.deleteComment(commentId);
             if(commentResponse == false){
-                return new ResponseEntity<Boolean>(commentResponse, HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }else {
-                return new ResponseEntity<Boolean>(commentResponse, HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.OK);
             }
         }
         catch (DataAccessException e){
-            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

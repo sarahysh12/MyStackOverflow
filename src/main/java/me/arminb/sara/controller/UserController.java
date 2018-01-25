@@ -23,9 +23,9 @@ public class UserController {
 
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
-    public ResponseEntity<User> findById(@PathVariable("id") String id) {
+    public ResponseEntity<User> findUserById(@PathVariable("id") String id) {
         try {
-            User user = userService.findById(id);
+            User user = userService.findUserById(id);
             if(user != null) {
                 return new ResponseEntity<User>(user, HttpStatus.OK);
             } else {
@@ -44,8 +44,7 @@ public class UserController {
                                              @RequestParam(value="page", required = false) Integer pageNumber,
                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
         try {
-            System.out.println("hii");
-            List<User> users = userService.find(username, email, pageNumber, pageCount);
+            List<User> users = userService.findUser(username, email, pageNumber, pageCount);
             if(users != null) {
                 return new ResponseEntity<List<User>>(users, HttpStatus.OK);
             } else {
@@ -89,18 +88,18 @@ public class UserController {
 
 
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteUser(@PathVariable("id") String id) {
+    public ResponseEntity deleteUser(@PathVariable("id") String id) {
         try {
             Boolean userResponse = userService.deleteUser(id);
             if(userResponse == false) {
-                return new ResponseEntity<Boolean>(userResponse, HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<Boolean>(userResponse, HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
         }
         catch (DataAccessException e){
-            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

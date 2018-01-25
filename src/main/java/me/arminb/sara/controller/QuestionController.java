@@ -22,9 +22,9 @@ public class QuestionController {
 
 
     @RequestMapping(value="/questions/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Question> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Question> finQuestiondById(@PathVariable("id") String id) {
         try {
-            Question question = questionService.findById(id);
+            Question question = questionService.findQuestionById(id);
             if(question != null) {
                 return new ResponseEntity<Question>(question, HttpStatus.OK);
             } else {
@@ -37,12 +37,12 @@ public class QuestionController {
     }
 
     @RequestMapping(value="/questions",method = RequestMethod.GET)
-    public  ResponseEntity<List<Question>> find( @RequestParam(value="title", required=false) String title,
+    public  ResponseEntity<List<Question>> findQuestion( @RequestParam(value="title", required=false) String title,
                                              @RequestParam(value="tag", required = false) String tag,
                                              @RequestParam(value="page", required = false) Integer pageNumber,
                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
         try {
-            List<Question> questions = questionService.find(title, tag, pageNumber, pageCount);
+            List<Question> questions = questionService.findQuestion(title, tag, pageNumber, pageCount);
             if(questions != null) {
                 return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
             } else {
@@ -85,18 +85,18 @@ public class QuestionController {
     }
 
     @RequestMapping(value="questions/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteQuestion(@PathVariable("id") String questionId) {
+    public ResponseEntity deleteQuestion(@PathVariable("id") String questionId) {
         try {
             Boolean questionResponse = questionService.deleteQuestion(questionId);
             if (questionResponse == false) {
-                return new ResponseEntity<Boolean>(questionResponse, HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             else {
-                return new ResponseEntity<Boolean>(questionResponse, HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.OK);
             }
         }
         catch (DataAccessException e){
-            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

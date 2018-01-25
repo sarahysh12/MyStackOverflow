@@ -57,7 +57,6 @@ public class AnswerRequest {
         ans.setUser(user);
         ans.setRate(rate);
         ans.setComments(comments);
-        ans.setModifiedAt(new Date());
         return ans;
     }
 

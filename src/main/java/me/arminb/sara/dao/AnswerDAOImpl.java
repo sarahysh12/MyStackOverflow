@@ -30,7 +30,7 @@ public class AnswerDAOImpl implements AnswerDAO {
 
 
     @Override
-    public Answer saveAnswer(Answer answer) throws DataAccessException {
+    public Answer save(Answer answer) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("questions");
             if (answer.getId() == null) {
@@ -61,7 +61,7 @@ public class AnswerDAOImpl implements AnswerDAO {
         }
 
     @Override
-    public boolean deleteAnswer(String answerId) throws DataAccessException{
+    public boolean delete(String answerId) throws DataAccessException{
         try {
             MongoCollection<Document> collection = database.getCollection("questions");
             BasicDBObject query = new BasicDBObject("answers.answer_id", new ObjectId(answerId));

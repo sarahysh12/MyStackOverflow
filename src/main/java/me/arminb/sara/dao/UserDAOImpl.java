@@ -115,7 +115,7 @@ public class UserDAOImpl implements UserDAO {
 
 
     @Override
-    public User saveUser(User user) throws DataAccessException {
+    public User save(User user) throws DataAccessException {
         try{
             MongoCollection<Document> collection = database.getCollection("users");
 
@@ -147,7 +147,7 @@ public class UserDAOImpl implements UserDAO {
 
 
     @Override
-    public boolean deleteUser(String id) throws DataAccessException {
+    public boolean delete(String id) throws DataAccessException {
         try {
             MongoCollection<Document> collection = database.getCollection("users");
             BasicDBObject query = new BasicDBObject();

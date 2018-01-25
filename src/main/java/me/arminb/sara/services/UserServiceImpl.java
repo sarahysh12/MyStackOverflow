@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
 
     @Override
-    public User findById(String id) throws DataAccessException {
+    public User findUserById(String id) throws DataAccessException {
         try{
             return userDAO.findById(id);
         }catch(DataAccessException e){
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> find(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException {
+    public List<User> findUser(String username, String email, Integer pageNumber, Integer pageCount) throws DataAccessException {
         try{
             return userDAO.find(username, email, pageNumber, pageCount);
         }
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteUser(String id) throws DataAccessException {
         try{
-            return userDAO.deleteUser(id);
+            return userDAO.delete(id);
         }
         catch(DataAccessException e){
             throw e;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) throws DataAccessException {
         try{
-            return userDAO.saveUser(user);
+            return userDAO.save(user);
         }
         catch(DataAccessException e){
             throw e;

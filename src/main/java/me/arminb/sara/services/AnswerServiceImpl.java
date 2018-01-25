@@ -15,7 +15,7 @@ public class AnswerServiceImpl implements AnswerService{
     @Override
     public Answer saveAnswer(Answer answer) throws DataAccessException {
         try{
-            return answerDAO.saveAnswer(answer);
+            return answerDAO.save(answer);
         }
         catch (DataAccessException e){
             throw e;
@@ -25,7 +25,7 @@ public class AnswerServiceImpl implements AnswerService{
     @Override
     public boolean deleteAnswer(String answerId) throws DataAccessException {
         try{
-            return answerDAO.deleteAnswer(answerId);
+            return answerDAO.delete(answerId);
         }
         catch(DataAccessException e){
             throw e;
