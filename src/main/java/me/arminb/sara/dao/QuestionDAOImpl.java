@@ -30,22 +30,18 @@ public class QuestionDAOImpl implements QuestionDAO {
     private MongoDatabase database;
 
 
-    private Question mapQuestion(Document questionDoc){
+    private Question parseQuestionDocument(Document questionDoc){
 
         Question question = new Question();
 
         DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-        Date createDate = null;
         Date modifiedDate = null;
         try {
-            if (questionDoc.get("created_date") != null){
-                createDate = format.parse(questionDoc.get("created_date").toString());
-            }
             if (questionDoc.get("modified_date") != null) {
                 modifiedDate = format.parse(questionDoc.get("modified_date").toString());
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.warn("Failed to parse the date");
         }
 
         List<String> tagList = (List<String>) questionDoc.get("tags");
@@ -73,7 +69,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             MongoCursor<Document> cursor = collection.find(query).iterator();
             if (cursor.hasNext()) {
                 Document questionDoc = cursor.next();
-                Question question = mapQuestion(questionDoc);
+                Question question = parseQuestionDocument(questionDoc);
                 return question;
             }
             else{
@@ -98,15 +94,15 @@ public class QuestionDAOImpl implements QuestionDAO {
             MongoCollection<Document> collection = database.getCollection("questions");
             BasicDBObject query = new BasicDBObject();
             if (title != null) {
-                query.append("title", title);
+                query.append("title", new BasicDBObject("$regex", ".*" + title + ".*"));
             }
             if (tag != null) {
-                query.append("tags", tag);
+                query.append("tags", new BasicDBObject("$regex", ".*" + tag + ".*"));
             }
             MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
             while (cursor.hasNext()) {
                 Document questionDoc = cursor.next();
-                Question question = mapQuestion(questionDoc);
+                Question question = parseQuestionDocument(questionDoc);
                 list.add(question);
             }
             if (list.size() != 0) {
@@ -130,14 +126,13 @@ public class QuestionDAOImpl implements QuestionDAO {
                 question.setId(new ObjectId().toString());
                 Document doc = new Document("_id", new ObjectId(question.getId())).append("title", question.getTitle()).append("rate", question.getRate())
                         .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
-                        .append("tags", question.getTags()).append("modified_date", question.getModifiedAt()).append("created_date", question.getCreatedAt());
+                        .append("tags", question.getTags()).append("modified_date", question.getModifiedAt());
                 collection.insertOne(doc);
             }
             else{
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("title", question.getTitle()).append("rate", question.getRate())
-                        .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
-                        .append("tags", question.getTags()).append("modified_date", question.getModifiedAt()).append("created_date", question.getCreatedAt())
+                        .append("content", question.getContent()).append("user", question.getUser()).append("tags", question.getTags()).append("modified_date", question.getModifiedAt())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(question.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);

@@ -3,7 +3,7 @@ package me.arminb.sara.entities;
 
 import java.util.Date;
 
-public class HistoricalBaseEntity extends BaseEntity{
+public abstract class HistoricalBaseEntity extends BaseEntity{
 
     protected Date modifiedAt;
 

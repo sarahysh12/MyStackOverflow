@@ -33,20 +33,16 @@ public class UserDAOImpl implements UserDAO {
     @Autowired
     private MongoDatabase database;
 
-    private User mapUser(Document userDoc){
+    private User parseUserDocument(Document userDoc){
         User user = new User();
         DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-        Date createDate = null;
         Date modifiedDate = null;
         try {
-            if (userDoc.get("created_date") != null){
-            createDate = format.parse(userDoc.get("created_date").toString());
-            }
             if (userDoc.get("modified_date") != null) {
                 modifiedDate = format.parse(userDoc.get("modified_date").toString());
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.warn("Failed to parse the date");
         }
         user.setId(userDoc.get("_id").toString());
         user.setUsername(userDoc.get("username").toString());
@@ -65,7 +61,7 @@ public class UserDAOImpl implements UserDAO {
             MongoCursor<Document> cursor = collection.find(query).iterator();
             if (cursor.hasNext()) {
                 Document userDoc = cursor.next();
-                User user = mapUser(userDoc);
+                User user = parseUserDocument(userDoc);
                 return user;
             }else{
                 return null;
@@ -89,15 +85,15 @@ public class UserDAOImpl implements UserDAO {
             MongoCollection<Document> collection = database.getCollection("users");
             BasicDBObject query = new BasicDBObject();
             if (username != null) {
-                query.append("username", username);
+                query.append("username", new BasicDBObject("$regex", ".*" + username + ".*"));
             }
             if (email != null) {
-                query.append("email", email);
+                query.append("email", new BasicDBObject("$regex", ".*" + email + ".*"));
             }
             MongoCursor<Document> cursor = collection.find(query).skip(pageCount * (pageNumber - 1)).limit(pageCount).iterator();
             while (cursor.hasNext()) {
                 Document userDoc = cursor.next();
-                User user = mapUser(userDoc);
+                User user = parseUserDocument(userDoc);
                 list.add(user);
             }
             if (list.size() != 0) {
@@ -121,13 +117,13 @@ public class UserDAOImpl implements UserDAO {
             if (user.getId() == null){
                 user.setId(new ObjectId().toString());
                 Document doc = new Document("_id", new ObjectId(user.getId())).append("email", user.getEmail()).append("password", user.getPassword())
-                        .append("username", user.getUsername()).append("created_date", user.getCreatedAt()).append("modified_date", user.getModifiedAt());
+                        .append("username", user.getUsername()).append("modified_date", user.getModifiedAt());
                 collection.insertOne(doc);
             }
             else{
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("email", user.getEmail()).append("password", user.getPassword())
-                        .append("username", user.getUsername()).append("created_date", user.getCreatedAt()).append("modified_date", user.getModifiedAt())
+                        .append("username", user.getUsername()).append("modified_date", user.getModifiedAt())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(user.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);
