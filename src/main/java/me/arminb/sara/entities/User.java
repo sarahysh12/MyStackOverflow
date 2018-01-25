@@ -2,7 +2,7 @@ package me.arminb.sara.entities;
 
 
 
-public class User extends BaseEntity {
+public class User extends HistoricalBaseEntity {
 
     private String username;
 

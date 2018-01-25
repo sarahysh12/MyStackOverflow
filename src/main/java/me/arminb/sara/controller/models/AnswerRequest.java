@@ -15,8 +15,6 @@ public class AnswerRequest {
 
     private int rate;
 
-    private List<Comment> comments;
-
     private String user;
 
     public String getAnswer() {
@@ -35,14 +33,6 @@ public class AnswerRequest {
         this.rate = rate;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
     public String getUser() {
         return user;
     }
@@ -56,7 +46,6 @@ public class AnswerRequest {
         ans.setAnswer(answer);
         ans.setUser(user);
         ans.setRate(rate);
-        ans.setComments(comments);
         return ans;
     }
 

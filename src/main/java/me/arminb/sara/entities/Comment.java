@@ -1,7 +1,7 @@
 package me.arminb.sara.entities;
 
 
-public class Comment extends BaseEntity{
+public class Comment extends HistoricalBaseEntity{
 
     private String content;
 

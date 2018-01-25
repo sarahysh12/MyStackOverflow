@@ -2,7 +2,7 @@ package me.arminb.sara.entities;
 
 import java.util.List;
 
-public class Answer extends BaseEntity{
+public class Answer extends HistoricalBaseEntity{
 
     private String answer;
 

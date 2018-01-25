@@ -52,7 +52,6 @@ public class UserDAOImpl implements UserDAO {
         user.setUsername(userDoc.get("username").toString());
         user.setPassword(userDoc.get("password").toString());
         user.setEmail(userDoc.get("email").toString());
-        user.setCreatedAt(createDate);
         user.setModifiedAt(modifiedDate);
         return user;
     }
@@ -121,7 +120,6 @@ public class UserDAOImpl implements UserDAO {
 
             if (user.getId() == null){
                 user.setId(new ObjectId().toString());
-                user.setCreatedAt(new Date());
                 Document doc = new Document("_id", new ObjectId(user.getId())).append("email", user.getEmail()).append("password", user.getPassword())
                         .append("username", user.getUsername()).append("created_date", user.getCreatedAt()).append("modified_date", user.getModifiedAt());
                 collection.insertOne(doc);

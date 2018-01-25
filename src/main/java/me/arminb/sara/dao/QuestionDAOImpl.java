@@ -52,7 +52,6 @@ public class QuestionDAOImpl implements QuestionDAO {
         question.setTags(tagList);
 
         question.setId(questionDoc.get("_id").toString());
-        question.setCreatedAt(createDate);
         question.setModifiedAt(modifiedDate);
         question.setContent(questionDoc.get("content").toString());
         question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
@@ -129,7 +128,6 @@ public class QuestionDAOImpl implements QuestionDAO {
 
             if (question.getId() == null){
                 question.setId(new ObjectId().toString());
-                question.setCreatedAt(new Date());
                 Document doc = new Document("_id", new ObjectId(question.getId())).append("title", question.getTitle()).append("rate", question.getRate())
                         .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
                         .append("tags", question.getTags()).append("modified_date", question.getModifiedAt()).append("created_date", question.getCreatedAt());

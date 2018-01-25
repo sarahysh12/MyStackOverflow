@@ -33,7 +33,6 @@ public class CommentDAOImpl implements CommentDAO {
             MongoCollection<Document> collection = database.getCollection("questions");
             if (comment.getId() == null) {
                 comment.setId(new ObjectId().toString());
-                comment.setCreatedAt(new Date());
                 Document doc = new Document().append("comment_id", new ObjectId(comment.getId())).append("content", comment.getContent())
                         .append("user", comment.getUser()).append("created_date", comment.getCreatedAt())
                         .append("modified_date", comment.getModifiedAt());

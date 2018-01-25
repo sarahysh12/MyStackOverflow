@@ -35,7 +35,6 @@ public class AnswerDAOImpl implements AnswerDAO {
             MongoCollection<Document> collection = database.getCollection("questions");
             if (answer.getId() == null) {
                 answer.setId(new ObjectId().toString());
-                answer.setCreatedAt(new Date());
                 Document doc = new Document().append("answer_id", new ObjectId(answer.getId())).append("answer", answer.getAnswer())
                         .append("rate", answer.getRate()).append("comments", new ArrayList<Comment>()).append("user", answer.getUser())
                         .append("created_date", answer.getCreatedAt()).append("modified_date", answer.getModifiedAt());
