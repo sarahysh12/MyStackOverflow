@@ -39,8 +39,8 @@ public class UserDAOImpl implements UserDAO {
         DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
         Date modifiedDate = null;
         try {
-            if (userDoc.get("modified_date") != null) {
-                modifiedDate = format.parse(userDoc.get("modified_date").toString());
+            if (userDoc.get("modified_at") != null) {
+                modifiedDate = format.parse(userDoc.get("modified_at").toString());
             }
         } catch (ParseException e) {
             logger.warn("Failed to parse the date");
@@ -114,17 +114,18 @@ public class UserDAOImpl implements UserDAO {
     public User save(User user) throws DataAccessException {
         try{
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+            user.setModifiedAtToNow();
 
             if (user.getId() == null){
                 user.setId(new ObjectId().toString());
                 Document doc = new Document("_id", new ObjectId(user.getId())).append("email", user.getEmail()).append("password", user.getPassword())
-                        .append("username", user.getUsername()).append("modified_date", user.getModifiedAt());
+                        .append("username", user.getUsername()).append("modified_at", user.getModifiedAt());
                 collection.insertOne(doc);
             }
             else{
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("email", user.getEmail()).append("password", user.getPassword())
-                        .append("username", user.getUsername()).append("modified_date", user.getModifiedAt())
+                        .append("username", user.getUsername()).append("modified_at", user.getModifiedAt())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(user.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);

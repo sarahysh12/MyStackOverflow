@@ -38,8 +38,8 @@ public class QuestionDAOImpl implements QuestionDAO {
         DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
         Date modifiedDate = null;
         try {
-            if (questionDoc.get("modified_date") != null) {
-                modifiedDate = format.parse(questionDoc.get("modified_date").toString());
+            if (questionDoc.get("modified_at") != null) {
+                modifiedDate = format.parse(questionDoc.get("modified_at").toString());
             }
         } catch (ParseException e) {
             logger.warn("Failed to parse the date");
@@ -122,19 +122,20 @@ public class QuestionDAOImpl implements QuestionDAO {
     public Question save(Question question) throws DataAccessException {
         try{
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+            question.setModifiedAtToNow();
 
             if (question.getId() == null){
                 question.setId(new ObjectId().toString());
                 Document doc = new Document("_id", new ObjectId(question.getId())).append("title", question.getTitle()).append("rate", question.getRate())
                         .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user_id", question.getUser())
-                        .append("tags", question.getTags()).append("modified_date", question.getModifiedAt());
+                        .append("tags", question.getTags()).append("modified_at", question.getModifiedAt());
                 collection.insertOne(doc);
             }
             else{
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("title", question.getTitle()).append("rate", question.getRate())
-                        .append("content", question.getContent()).append("user_id", question.getUser()).append("tags", question.getTags())
-                        .append("modified_date", question.getModifiedAt())
+                        .append("content", question.getContent()).append("tags", question.getTags())
+                        .append("modified_at", question.getModifiedAt())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(question.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);
