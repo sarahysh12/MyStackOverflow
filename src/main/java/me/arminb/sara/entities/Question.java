@@ -14,7 +14,7 @@ public class Question extends HistoricalBaseEntity{
 
     private List<String> tags;
 
-    private String user;
+    private String userId;
 
     public String getTitle() {
         return title;
@@ -57,10 +57,10 @@ public class Question extends HistoricalBaseEntity{
     }
 
     public String getUser() {
-        return user;
+        return userId;
     }
 
     public void setUser(String user) {
-        this.user = user;
+        this.userId = user;
     }
 }

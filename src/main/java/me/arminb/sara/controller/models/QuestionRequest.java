@@ -18,7 +18,7 @@ public class QuestionRequest {
 
     private List<String> tags;
 
-    private String user;
+    private String userId;
 
     public String getTitle() {
         return title;
@@ -53,11 +53,11 @@ public class QuestionRequest {
     }
 
     public String getUser() {
-        return user;
+        return userId;
     }
 
     public void setUser(String user) {
-        this.user = user;
+        this.userId = user;
     }
 
     public Question toQuestion() {
@@ -65,7 +65,7 @@ public class QuestionRequest {
         question.setTitle(title);
         question.setRate(rate);
         question.setContent(content);
-        question.setUser(user);
+        question.setUser(userId);
         question.setTags(tags);
         return question;
     }

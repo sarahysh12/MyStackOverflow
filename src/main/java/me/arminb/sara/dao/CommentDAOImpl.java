@@ -35,7 +35,7 @@ public class CommentDAOImpl implements CommentDAO {
             if (comment.getId() == null) {
                 comment.setId(new ObjectId().toString());
                 Document doc = new Document().append("comment_id", new ObjectId(comment.getId())).append("content", comment.getContent())
-                        .append("user", comment.getUser()).append("created_date", comment.getCreatedAt())
+                        .append("user_id", comment.getUser()).append("created_date", comment.getCreatedAt())
                         .append("modified_date", comment.getModifiedAt());
 
                 BasicDBObject searchQuery = new BasicDBObject().append("answers.answer_id", new ObjectId(comment.getAnswerId()));
@@ -43,7 +43,7 @@ public class CommentDAOImpl implements CommentDAO {
             } else {
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("comments.$.content", comment.getContent())
-                        .append("comments.$.user", comment.getUser()).append("comments.$.created_date", comment.getCreatedAt())
+                        .append("comments.$.user_id", comment.getUser()).append("comments.$.created_date", comment.getCreatedAt())
                         .append("comments.$.modified_date", comment.getModifiedAt())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("answers.comments.$.comment_id", new ObjectId(comment.getId()));

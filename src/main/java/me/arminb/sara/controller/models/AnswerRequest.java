@@ -15,7 +15,7 @@ public class AnswerRequest {
 
     private int rate;
 
-    private String user;
+    private String userId;
 
     public String getAnswer() {
         return answer;
@@ -34,17 +34,17 @@ public class AnswerRequest {
     }
 
     public String getUser() {
-        return user;
+        return userId;
     }
 
     public void setUser(String user) {
-        this.user = user;
+        this.userId = user;
     }
 
     public Answer toAnswer(){
         Answer ans = new Answer();
         ans.setAnswer(answer);
-        ans.setUser(user);
+        ans.setUser(userId);
         ans.setRate(rate);
         return ans;
     }

@@ -37,14 +37,14 @@ public class AnswerDAOImpl implements AnswerDAO {
             if (answer.getId() == null) {
                 answer.setId(new ObjectId().toString());
                 Document doc = new Document().append("answer_id", new ObjectId(answer.getId())).append("answer", answer.getAnswer())
-                        .append("rate", answer.getRate()).append("comments", new ArrayList<Comment>()).append("user", answer.getUser())
+                        .append("rate", answer.getRate()).append("comments", new ArrayList<Comment>()).append("user_id", answer.getUser())
                         .append("created_date", answer.getCreatedAt()).append("modified_date", answer.getModifiedAt());
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(answer.getQuestionId()));
                 collection.updateOne(searchQuery, Updates.addToSet("answers", doc));
             } else {
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("answers.$.answer", answer.getAnswer()).append("answers.$.rate", answer.getRate())
-                        .append("answers.$.comments", answer.getComments()).append("answers.$.user", answer.getUser())
+                        .append("answers.$.comments", answer.getComments()).append("answers.$.user_id", answer.getUser())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("answers.answer_id", new ObjectId(answer.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);

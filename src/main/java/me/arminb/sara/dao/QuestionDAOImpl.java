@@ -126,14 +126,14 @@ public class QuestionDAOImpl implements QuestionDAO {
             if (question.getId() == null){
                 question.setId(new ObjectId().toString());
                 Document doc = new Document("_id", new ObjectId(question.getId())).append("title", question.getTitle()).append("rate", question.getRate())
-                        .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user", question.getUser())
+                        .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user_id", question.getUser())
                         .append("tags", question.getTags()).append("modified_date", question.getModifiedAt());
                 collection.insertOne(doc);
             }
             else{
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("title", question.getTitle()).append("rate", question.getRate())
-                        .append("content", question.getContent()).append("user", question.getUser()).append("tags", question.getTags())
+                        .append("content", question.getContent()).append("user_id", question.getUser()).append("tags", question.getTags())
                         .append("modified_date", question.getModifiedAt())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(question.getId()));

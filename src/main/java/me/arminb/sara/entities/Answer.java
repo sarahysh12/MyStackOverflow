@@ -10,9 +10,9 @@ public class Answer extends HistoricalBaseEntity{
 
     private List<Comment> comments;
 
-    private String user;
+    private String userId;
 
-    private String question;
+    private String questionId;
 
     public String getAnswer() {
         return answer;
@@ -39,18 +39,18 @@ public class Answer extends HistoricalBaseEntity{
     }
 
     public String getUser() {
-        return user;
+        return userId;
     }
 
     public void setUser(String user) {
-        this.user = user;
+        this.userId = user;
     }
 
     public String getQuestionId() {
-        return question;
+        return questionId;
     }
 
     public void setQuestionId(String questionId) {
-        this.question = questionId;
+        this.questionId = questionId;
     }
 }

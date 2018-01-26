@@ -7,7 +7,7 @@ public class Comment extends HistoricalBaseEntity{
 
     private String user;
 
-    private String answer;
+    private String answerId;
 
     public String getContent() {
         return content;
@@ -26,10 +26,10 @@ public class Comment extends HistoricalBaseEntity{
     }
 
     public String getAnswerId() {
-        return answer;
+        return answerId;
     }
 
     public void setAnswerId(String answerId) {
-        this.answer = answerId;
+        this.answerId = answerId;
     }
 }
