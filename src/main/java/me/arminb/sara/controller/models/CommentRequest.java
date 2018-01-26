@@ -11,7 +11,7 @@ public class CommentRequest {
 
     private String content;
 
-    private String user;
+    private String userId;
 
     public String getContent() {
         return content;
@@ -21,17 +21,17 @@ public class CommentRequest {
         this.content = comment;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserId(String user) {
+        this.userId = user;
     }
 
     public Comment toComment(){
         Comment comment = new Comment();
-        comment.setUser(user);
+        comment.setUserId(userId);
         comment.setContent(content);
         return comment;
     }

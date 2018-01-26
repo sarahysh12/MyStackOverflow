@@ -32,12 +32,14 @@ public class CommentController {
         }
     }
 
-    @RequestMapping(value="/comments/{cid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value="/answers/{aid}/comments/{cid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Comment> updateComment(@PathVariable("cid") String commentId ,
+                                                 @PathVariable("aid") String answerId ,
                                                   @RequestBody CommentRequest commentReq){
         try{
             Comment comment = commentReq.toComment();
             comment.setId(commentId);
+            comment.setAnswerId(answerId);
             Comment commentResponse = commentService.saveComment(comment);
             if (commentResponse == null){
                 return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);

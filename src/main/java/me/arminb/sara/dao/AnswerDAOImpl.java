@@ -39,7 +39,7 @@ public class AnswerDAOImpl implements AnswerDAO {
             if (answer.getId() == null) {
                 answer.setId(new ObjectId().toString());
                 Document doc = new Document().append("answer_id", new ObjectId(answer.getId())).append("answer", answer.getAnswer())
-                        .append("rate", answer.getRate()).append("comments", new ArrayList<Comment>()).append("user_id", answer.getUser())
+                        .append("rate", answer.getRate()).append("comments", new ArrayList<Comment>()).append("user_id", answer.getUserId())
                         .append("modified_at", answer.getModifiedAt());
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(answer.getQuestionId()));
                 collection.updateOne(searchQuery, Updates.addToSet("answers", doc));

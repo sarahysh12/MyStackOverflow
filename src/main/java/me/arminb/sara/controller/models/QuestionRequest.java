@@ -52,11 +52,11 @@ public class QuestionRequest {
         this.tags = tags;
     }
 
-    public String getUser() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUser(String user) {
+    public void setUserId(String user) {
         this.userId = user;
     }
 
@@ -65,7 +65,7 @@ public class QuestionRequest {
         question.setTitle(title);
         question.setRate(rate);
         question.setContent(content);
-        question.setUser(userId);
+        question.setUserId(userId);
         question.setTags(tags);
         return question;
     }

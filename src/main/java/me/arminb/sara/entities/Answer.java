@@ -38,11 +38,11 @@ public class Answer extends HistoricalBaseEntity{
         this.comments = comments;
     }
 
-    public String getUser() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUser(String user) {
+    public void setUserId(String user) {
         this.userId = user;
     }
 

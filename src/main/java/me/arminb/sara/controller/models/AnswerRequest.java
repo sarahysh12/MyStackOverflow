@@ -33,18 +33,18 @@ public class AnswerRequest {
         this.rate = rate;
     }
 
-    public String getUser() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUser(String user) {
+    public void setUserId(String user) {
         this.userId = user;
     }
 
     public Answer toAnswer(){
         Answer ans = new Answer();
         ans.setAnswer(answer);
-        ans.setUser(userId);
+        ans.setUserId(userId);
         ans.setRate(rate);
         return ans;
     }

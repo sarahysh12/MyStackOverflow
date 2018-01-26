@@ -53,7 +53,7 @@ public class QuestionDAOImpl implements QuestionDAO {
         question.setContent(questionDoc.get("content").toString());
         question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
         question.setTitle(questionDoc.get("title").toString());
-        question.setUser(questionDoc.get("user").toString());
+        question.setUserId(questionDoc.get("user_id").toString());
 
         List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
         question.setAnswers(ansList);
@@ -127,7 +127,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             if (question.getId() == null){
                 question.setId(new ObjectId().toString());
                 Document doc = new Document("_id", new ObjectId(question.getId())).append("title", question.getTitle()).append("rate", question.getRate())
-                        .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user_id", question.getUser())
+                        .append("content", question.getContent()).append("answers", new ArrayList<Answer>()).append("user_id", question.getUserId())
                         .append("tags", question.getTags()).append("modified_at", question.getModifiedAt());
                 collection.insertOne(doc);
             }
