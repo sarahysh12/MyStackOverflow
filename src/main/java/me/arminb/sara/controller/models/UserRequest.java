@@ -3,9 +3,8 @@ package me.arminb.sara.controller.models;
 import me.arminb.sara.entities.User;
 import org.bson.types.ObjectId;
 
-/**
- * Created by sarayarshenas on 1/11/18.
- */
+import java.util.Date;
+
 public class UserRequest {
 
     private String username;

@@ -1,25 +1,14 @@
 package me.arminb.sara.entities;
 
 
-import com.sun.istack.internal.NotNull;
-import org.bson.types.ObjectId;
 
-//import javax.validation.constraints.Size;
-
-public class User {
-
-    private ObjectId _id;
+public class User extends HistoricalBaseEntity {
 
     private String username;
 
     private String email;
 
     private String password;
-
-
-    public ObjectId getId() {return _id;}
-
-    public void setId(ObjectId id) {this._id = id;}
 
     public String getUsername() {
         return username;

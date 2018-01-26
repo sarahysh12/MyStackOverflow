@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -20,24 +21,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<User>> findAll(@RequestParam(value="page", required=false) Integer pageNumber,
-                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
-        try {
-            List<User> users = userService.findAll(pageNumber, pageCount);
-
-            return new ResponseEntity<List<User>>(users, HttpStatus.OK);
-        }
-        catch (DataAccessException e){
-            return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
-    public ResponseEntity<User> findById(@PathVariable("id") String id) {
+    public ResponseEntity<User> findUserById(@PathVariable("id") String id) {
         try {
-            User user = userService.findById(id);
+            User user = userService.findUserById(id);
             if(user != null) {
                 return new ResponseEntity<User>(user, HttpStatus.OK);
             } else {
@@ -50,13 +38,13 @@ public class UserController {
     }
 
 
-    @RequestMapping(value="/search",method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public  ResponseEntity<List<User>> find( @RequestParam(value="username", required=false) String username,
                                              @RequestParam(value="email", required = false) String email,
                                              @RequestParam(value="page", required = false) Integer pageNumber,
                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
         try {
-            List<User> users = userService.find(username, email, pageNumber, pageCount);
+            List<User> users = userService.findUser(username, email, pageNumber, pageCount);
             if(users != null) {
                 return new ResponseEntity<List<User>>(users, HttpStatus.OK);
             } else {
@@ -74,31 +62,21 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody UserRequest userReq) {
         try {
             User user = userReq.toUser();
-            return new ResponseEntity<User>(userService.save(user), HttpStatus.OK);
+            return new ResponseEntity<User>(userService.saveUser(user), HttpStatus.OK);
         }
         catch (DataAccessException e){
             return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> delete(@PathVariable("id") String id) {
-        try {
-            return new ResponseEntity<Boolean>(userService.delete(id), HttpStatus.OK);
-        }
-        catch (DataAccessException e){
-            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @RequestMapping(value= "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<User> update(@PathVariable("id") String id, @RequestBody UserRequest userReq) {
+    @RequestMapping(value= "/{id}", method = RequestMethod.PUT, consumes =  MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<User> updateUser(@PathVariable("id") String id, @RequestBody UserRequest userReq) {
         try {
             User user = userReq.toUser();
-            user.setId(new ObjectId(id));
-            User user_obj = userService.save(user);
-            if(user_obj != null) {
-                return new ResponseEntity<User>(user_obj, HttpStatus.OK);
+            user.setId(id);
+            User userResponse = userService.saveUser(user);
+            if(userResponse != null) {
+                return new ResponseEntity<User>(userResponse, HttpStatus.OK);
             } else {
                 return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
             }
@@ -107,5 +85,23 @@ public class UserController {
             return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@PathVariable("id") String id) {
+        try {
+            Boolean userResponse = userService.deleteUser(id);
+            if(userResponse == false) {
+                return new ResponseEntity(HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+        }
+        catch (DataAccessException e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
