@@ -39,7 +39,7 @@ public class UserController {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    public  ResponseEntity<List<User>> find( @RequestParam(value="username", required=false) String username,
+    public  ResponseEntity<List<User>> findUser( @RequestParam(value="username", required=false) String username,
                                              @RequestParam(value="email", required = false) String email,
                                              @RequestParam(value="page", required = false) Integer pageNumber,
                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
@@ -86,16 +86,15 @@ public class UserController {
         }
     }
 
-
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteUser(@PathVariable("id") String id) {
         try {
             Boolean userResponse = userService.deleteUser(id);
             if(userResponse == false) {
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             else{
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.OK);
             }
         }
         catch (DataAccessException e){
