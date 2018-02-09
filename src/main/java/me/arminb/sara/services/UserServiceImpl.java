@@ -3,6 +3,9 @@ package me.arminb.sara.services;
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import me.arminb.sara.dao.UserDAO;
 
@@ -48,6 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) throws DataAccessException {
         try{
+            user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword()));
             return userDAO.save(user);
         }
         catch(DataAccessException e){

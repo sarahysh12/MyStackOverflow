@@ -1,32 +1,37 @@
 package me.arminb.sara.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Configuration
+@EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     DaoAuthenticationProvider daoAuthenticationProvider;
-    List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
+
+    @Autowired
+    AuthorizationServerTokenServices tokenServices;
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.checkTokenAccess("hasRole('CLIENT')");
+        oauthServer.checkTokenAccess("denyAll()");
     }
 
     @Override
@@ -34,29 +39,20 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         clients.inMemory()
                 .withClient("client")
                 .authorizedGrantTypes("password", "refresh_token")
-                .authorities("ROLE_USER")
-                .scopes("read")
-                .secret("secret").accessTokenValiditySeconds(3600);
+                .secret("{noop}secret")
+                .scopes("logged")
+                .accessTokenValiditySeconds(3600)
+                .refreshTokenValiditySeconds(3600);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
         providers.add(daoAuthenticationProvider);
         endpoints
-                .tokenServices(myTokenService())
-                .authenticationManager(new ProviderManager(providers));
-    }
-
-    @Bean
-    @Qualifier("myTokenService")
-    AuthorizationServerTokenServices myTokenService()
-    {
-        DefaultTokenServices ret = new DefaultTokenServices();
-        ret.setTokenStore(new InMemoryTokenStore());
-        ret.setAccessTokenValiditySeconds(3000);
-        ret.setRefreshTokenValiditySeconds(3000);
-        ret.setSupportRefreshToken(true);
-        return ret;
+                .tokenServices(tokenServices)
+                .authenticationManager(new ProviderManager(providers))
+                .userDetailsService(userDetailsService);
     }
 
 
