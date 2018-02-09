@@ -5,10 +5,12 @@ import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
 import me.arminb.sara.services.UserService;
 import org.bson.types.ObjectId;
+import org.eclipse.jetty.server.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -56,7 +58,6 @@ public class UserController {
             return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> addUser(@RequestBody UserRequest userReq) {
