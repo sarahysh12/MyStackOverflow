@@ -12,17 +12,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
-
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     public ResponseEntity<User> findUserById(@PathVariable("id") String id) {
@@ -41,7 +39,7 @@ public class UserController {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    public  ResponseEntity<List<User>> findUser( @RequestParam(value="username", required=false) String username,
+    public  ResponseEntity<List<User>> findAll( @RequestParam(value="username", required=false) String username,
                                              @RequestParam(value="email", required = false) String email,
                                              @RequestParam(value="page", required = false) Integer pageNumber,
                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {

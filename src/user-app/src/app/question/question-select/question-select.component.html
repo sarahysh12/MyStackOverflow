@@ -1,0 +1,43 @@
+<div class="container">
+  <img src="../assets/images/QA.png" height="70" width="150"/>
+</div>
+
+<div class="container">
+  <div class="row mt-4"><h4 class="px-4">{{question.rate}}</h4>
+
+
+    <div id="topic" class="upvote">
+      <a class="upvote"></a>
+      <span class="count">3</span>
+      <a class="downvote"></a>
+      <a class="star"></a>
+    </div>
+
+    <h5 class="px-3">{{question.title}}</h5></div>
+  <hr>
+  <p class="mb-4">{{question.content}}</p>
+  <p class="mb-3">{{question.tags}}</p>
+
+  <small>Asked on {{question.createdAt | date}}</small>
+  <br>
+  <a [routerLink]="" (click)="editQuestionPage(question)">Edit</a>
+  <hr>
+  <h6>Answers</h6>
+
+  <form novalidate [formGroup]="answerForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <div class="col-md-8">
+      <textarea class="form-control" formControlName="content" placeholder="Write an answer" rows="5" type="text"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group ">
+    <div class="cols-sm-10">
+      <div class="col-auto"></div><button type="submit" class="btn btn-success"  [disabled]="!answerForm.valid" >Enter</button>
+    </div>
+  </div>
+
+
+
+  </form>
+</div>

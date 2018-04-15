@@ -1,0 +1,116 @@
+<div class="container">
+  <img src="../assets/images/QA.png" height="70" width="150"/>
+</div>
+<div class="container">
+  <div class="text-center">
+    <h2>Ask Questions and Give Answers</h2>
+    <h3>And grow the world's knowledge</h3>
+  </div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 ml-auto">
+      <form novalidate [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="validation-summary-valid text-danger" data-valmsg-summary="true"><ul><li style="display:none"></li></ul></div>
+        <div class="well register-well">
+          <div class="form-group">
+            <div class="cols-sm-12">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user fa" style="font-size:18px;"></i></span>
+                <div class="col-md-10">
+                  <input class="form-control input-lg test" formControlName="username" data-val="true" data-toggle="tooltip" data-trigger="focus" data-placement="right" data-val-required="The Username field is required." id="Username" name="Username" placeholder="Enter Username" title="A username is more secure than an email address. Create a name up to 10 characters long" type="text" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="cols-sm-12">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-envelope" style="font-size:18px;"></i></span>
+                <div class="col-md-10">
+                  <input class="form-control input-lg test" formControlName="email" data-val="true" data-toggle="tooltip" data-trigger="focus" data-placement="right" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" placeholder="Enter email address" title="An email address is used to recover a forgotten username or password" type="text" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <div class="cols-sm-10">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock" style="font-size:18px;"></i></span>
+                <div class="col-md-10">
+                  <input class="form-control input-lg test" formControlName="password" id="EnterPassword" data-val="true" data-toggle="tooltip" data-trigger="focus" data-placement="right" data-val-equalto="The password and confirmation password do not match." data-val-equalto-other="*.Password" title="To secure your account, choose a password you haven't used before and avoid using a family member or pet's name." name="EnterPassword" placeholder="Enter password" type="password">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="cols-sm-10">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock" style="font-size:18px;"></i></span>
+                <div class="col-md-10">
+                  <input class="form-control input-lg" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm password" type="password">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group ">
+            <div class="cols-sm-10">
+              <div class="input-group">
+                <div class="col-auto"></div>
+                <button type="submit" class="btn btn-primary btn-lg"  [disabled]="!userForm.valid" >Sign Up</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="col-md-4 mr-auto ">
+      <form novalidate [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <input name="__RequestVerificationToken" type="hidden" value="PDTMcD90bxFtsVsMgc1DeiBnH2_yyN8S0WZW1Rd0xXZDj0k1bJxTVzDTe3eEG3JpzxNBpw5yMROIx0XZ5AuBuIBbViy3Gru11R8biX0NxBE1">
+        <div class="validation-summary-valid text-danger" data-valmsg-summary="true"><ul><li style="display:none"></li></ul></div>
+        <div class="well register-well">
+          <div class="form-group">
+            <div class="cols-sm-12">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user fa" style="font-size:18px;"></i></span>
+                <div class="col-md-10">
+                  <input class="form-control input-lg test" formControlName="email" data-val="true" data-toggle="tooltip" data-trigger="focus" data-placement="right" data-val-required="The Username field is required." id="Username" name="Username" placeholder="Enter Username" title="A username is more secure than an email address. Create a name up to 10 characters long" type="text" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="cols-sm-10">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock" style="font-size:18px;"></i></span>
+                <div class="col-md-10">
+                  <input class="form-control input-lg test" formControlName="password" id="EnterPassword" data-val="true" data-toggle="tooltip" data-trigger="focus" data-placement="right" data-val-equalto="The password and confirmation password do not match." data-val-equalto-other="*.Password" title="To secure your account, choose a password you haven't used before and avoid using a family member or pet's name." name="EnterPassword" placeholder="Enter password" type="password">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group ">
+            <div class="cols-sm-10">
+              <div class="input-group">
+                <div class="col-auto"></div><button type="button" id="Burt" class="btn btn-success btn-lg login-button">Log In </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

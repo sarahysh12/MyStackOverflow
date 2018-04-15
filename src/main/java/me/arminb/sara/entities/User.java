@@ -18,9 +18,7 @@ public class User extends HistoricalBaseEntity {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
     public void setEmail(String email) {
         this.email = email;

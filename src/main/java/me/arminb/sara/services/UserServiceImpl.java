@@ -3,6 +3,7 @@ package me.arminb.sara.services;
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
