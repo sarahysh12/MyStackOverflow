@@ -11,16 +11,18 @@ import java.util.List;
 public class StackOverflowUserDetails implements UserDetails {
     private String username;
     private String password;
+    private String role;
 
-    public StackOverflowUserDetails(String username, String password) {
+    public StackOverflowUserDetails(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority(this.role));
         return authorities;
     }
 

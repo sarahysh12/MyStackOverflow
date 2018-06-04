@@ -1,6 +1,7 @@
 package me.arminb.sara.jetty;
 
 import me.arminb.sara.configuration.MainConfiguration;
+import me.arminb.sara.configuration.SecurityCorsFilter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.WebApplicationInitializer;
@@ -10,6 +11,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
@@ -37,4 +39,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         };
     }
 
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[]{};
+    }
 }

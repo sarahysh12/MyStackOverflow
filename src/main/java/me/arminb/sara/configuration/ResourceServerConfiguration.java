@@ -2,6 +2,7 @@ package me.arminb.sara.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,12 +29,15 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER).and()
+                .cors().and()
                 .authorizeRequests()
-                .antMatchers("/oauth/**").permitAll()
-                //.antMatchers("/**").authenticated()
-                .and().logout().disable();
+                    .antMatchers(HttpMethod.OPTIONS, "/oauth/token").permitAll()
+                    .antMatchers("/oauth/**").permitAll()
+                    .antMatchers("/**").authenticated()
+                .and()
+                .logout().disable()
+                .csrf().disable();
     }
 
 

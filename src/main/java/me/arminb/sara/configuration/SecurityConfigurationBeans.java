@@ -32,8 +32,8 @@ public class SecurityConfigurationBeans {
     {
         DefaultTokenServices ret = new DefaultTokenServices();
         ret.setTokenStore(tokenStore());
-        //ret.setAccessTokenValiditySeconds(3000);
-        //ret.setRefreshTokenValiditySeconds(3000);
+        ret.setAccessTokenValiditySeconds(120);
+        ret.setRefreshTokenValiditySeconds(1000);
         ret.setSupportRefreshToken(true);
         return ret;
     }

@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import me.arminb.sara.entities.Answer;
+import me.arminb.sara.entities.Comment;
 import me.arminb.sara.entities.Question;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.crypto.Cipher;
+import javax.print.Doc;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +33,70 @@ public class QuestionDAOImpl implements QuestionDAO {
     @Autowired
     private MongoDatabase database;
 
+
+    private List<Comment> parseCommentsDocument(Document answerDoc) {
+
+        List<Document> commentDocList = (List<Document>) answerDoc.get("comments");
+
+        List<Comment> commentList = new ArrayList<Comment>();
+        for (int i = 0; i < commentDocList.size(); i++) {
+            Comment comment = new Comment();
+            DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+            Date modifiedDate = null;
+            try {
+                if (commentDocList.get(i).get("modified_at") != null) {
+                    modifiedDate = format.parse(commentDocList.get(i).get("modified_at").toString());
+                }
+            } catch (ParseException e) {
+                logger.warn("Failed to parse the date");
+            }
+
+            if(commentDocList.get(i).get("user_id") != null) {
+                comment.setUserId(commentDocList.get(i).get("user_id").toString());
+            }
+            comment.setContent(commentDocList.get(i).get("content").toString());
+            comment.setId(commentDocList.get(i).get("comment_id").toString());
+            comment.setModifiedAt(modifiedDate);
+            comment.setAnswerId(answerDoc.get("answer_id").toString());
+
+            commentList.add(comment);
+        }
+        return commentList;
+    }
+
+    private List<Answer> parseAnswersDocument(Document questionDoc){
+
+        List<Document> answersDocList = (List<Document>) questionDoc.get("answers");
+
+        List<Answer> answersList = new ArrayList<Answer>();
+        for (int i = 0; i < answersDocList.size(); i++) {
+            Answer answer = new Answer();
+            DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+            Date modifiedDate = null;
+            try {
+                if (answersDocList.get(i).get("modified_at") != null) {
+                    modifiedDate = format.parse(answersDocList.get(i).get("modified_at").toString());
+                }
+            } catch (ParseException e) {
+                logger.warn("Failed to parse the date");
+            }
+
+            answer.setId(answersDocList.get(i).get("answer_id").toString());
+            answer.setAnswer(answersDocList.get(i).get("answer").toString());
+            answer.setRate(Integer.parseInt(answersDocList.get(i).get("rate").toString()));
+            answer.setQuestionId(questionDoc.get("_id").toString());
+            if(answersDocList.get(i).get("user_id") != null) {
+                answer.setUserId(answersDocList.get(i).get("user_id").toString());
+            }
+            answer.setModifiedAt(modifiedDate);
+            if(answersDocList.get(i).get("comments") != null) {
+                answer.setComments(parseCommentsDocument(answersDocList.get(i)));
+            }
+            answersList.add(answer);
+        }
+
+        return answersList;
+    }
 
     private Question parseQuestionDocument(Document questionDoc){
 
@@ -53,11 +120,13 @@ public class QuestionDAOImpl implements QuestionDAO {
         question.setContent(questionDoc.get("content").toString());
         question.setRate(Integer.parseInt(questionDoc.get("rate").toString()));
         question.setTitle(questionDoc.get("title").toString());
-        question.setUserId(questionDoc.get("user_id").toString());
 
-        List<Answer> ansList = (List<Answer>) questionDoc.get("answers");
-        question.setAnswers(ansList);
-
+        if(questionDoc.get("user_id") != null) {
+            question.setUserId(questionDoc.get("user_id").toString());
+        }
+        if(questionDoc.get("answers") != null) {
+            question.setAnswers(parseAnswersDocument(questionDoc));
+        }
         return question;
     }
 

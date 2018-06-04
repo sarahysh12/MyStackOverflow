@@ -3,10 +3,8 @@ package me.arminb.sara.services;
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import me.arminb.sara.dao.UserDAO;
 
@@ -39,6 +37,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Secured({"ROLE_JUNIOR_USER","ROLE_SENIOR_USER","ROLE_ADMIN_USER"})
     @Override
     public boolean deleteUser(String id) throws DataAccessException {
         try{
@@ -49,6 +48,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Secured({"ROLE_JUNIOR_USER","ROLE_SENIOR_USER","ROLE_ADMIN_USER"})
     @Override
     public User saveUser(User user) throws DataAccessException {
         try{

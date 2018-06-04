@@ -24,7 +24,7 @@ public class StackOverflowUserDetailsService implements UserDetailsService {
                 throw new UsernameNotFoundException("Bad Credentials!");
             }
 
-            return new StackOverflowUserDetails(user.get(0).getUsername(),  user.get(0).getPassword());
+            return new StackOverflowUserDetails(user.get(0).getUsername(),  user.get(0).getPassword(), user.get(0).getRole());
         } catch (DataAccessException e) {
             throw new UsernameNotFoundException("Bad Credentials!");
         }

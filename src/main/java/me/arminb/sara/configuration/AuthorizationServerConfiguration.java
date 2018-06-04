@@ -2,6 +2,7 @@ package me.arminb.sara.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableAuthorizationServer
+@Import(CustomAuthorizationServerConfiguration.class)
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -41,7 +42,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .authorizedGrantTypes("password", "refresh_token")
                 .secret("{noop}secret")
                 .scopes("logged")
-                .accessTokenValiditySeconds(3600)
+                .accessTokenValiditySeconds(120)
                 .refreshTokenValiditySeconds(3600);
     }
 

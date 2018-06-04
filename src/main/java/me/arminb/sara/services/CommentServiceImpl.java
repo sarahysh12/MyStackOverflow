@@ -4,6 +4,7 @@ import me.arminb.sara.dao.CommentDAO;
 import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 @Service("commentService")
@@ -12,6 +13,7 @@ public class CommentServiceImpl implements CommentService{
     @Autowired
     private CommentDAO commentDAO;
 
+    @Secured({"ROLE_JUNIOR_USER","ROLE_SENIOR_USER","ROLE_ADMIN_USER"})
     @Override
     public Comment saveComment(Comment comment) throws DataAccessException {
         try{
@@ -22,6 +24,7 @@ public class CommentServiceImpl implements CommentService{
         }
     }
 
+    @Secured({"ROLE_JUNIOR_USER","ROLE_SENIOR_USER","ROLE_ADMIN_USER"})
     @Override
     public boolean deleteComment(String commentId) throws DataAccessException {
         try{
