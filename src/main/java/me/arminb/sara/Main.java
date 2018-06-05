@@ -1,8 +1,6 @@
 
 package me.arminb.sara;
 import me.arminb.sara.jetty.JettyServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Main {
 

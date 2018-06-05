@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
+
 @RestController
 @RequestMapping
 public class CommentController {
@@ -45,7 +46,7 @@ public class CommentController {
                 return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
             }
             else {
-                 return new ResponseEntity<Comment>(HttpStatus.OK);
+                 return new ResponseEntity<Comment>(commentResponse, HttpStatus.OK);
              }
         }
         catch (DataAccessException e){

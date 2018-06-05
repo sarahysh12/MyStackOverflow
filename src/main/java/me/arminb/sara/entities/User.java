@@ -10,6 +10,8 @@ public class User extends HistoricalBaseEntity {
 
     private String password;
 
+    private String role;
+
     public String getUsername() {
         return username;
     }
@@ -18,9 +20,7 @@ public class User extends HistoricalBaseEntity {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
     public void setEmail(String email) {
         this.email = email;
@@ -31,4 +31,20 @@ public class User extends HistoricalBaseEntity {
     }
 
     public void setPassword(String password) { this.password = password;}
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

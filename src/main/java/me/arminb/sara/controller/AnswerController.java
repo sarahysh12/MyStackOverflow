@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping
 public class AnswerController {
@@ -18,7 +17,7 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    //TODO: Add find method
+    //TODO: find method for answer
 
     @RequestMapping(value= "/questions/{qid}/answers", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Answer> addAnswer(@PathVariable("qid") String questionId, @RequestBody AnswerRequest answerReq){

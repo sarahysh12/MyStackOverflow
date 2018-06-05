@@ -37,6 +37,7 @@ public class JettyServer {
                         final ClassInheritanceMap map = new ClassInheritanceMap();
                         final ConcurrentHashSet<String> set = new ConcurrentHashSet<String>();
                         set.add(WebAppInitializer.class.getName());
+                        set.add(SecurityWebAppInitializer.class.getName());
                         map.put(WebApplicationInitializer.class.getName(), set);
                         context.setAttribute(CLASS_INHERITANCE_MAP, map);
                         _classInheritanceHandler = new ClassInheritanceHandler(map);

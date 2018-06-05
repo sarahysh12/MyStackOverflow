@@ -4,10 +4,7 @@ import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 import me.arminb.sara.entities.User;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -50,6 +47,7 @@ public class UserDAOImpl implements UserDAO {
         user.setPassword(userDoc.get("password").toString());
         user.setEmail(userDoc.get("email").toString());
         user.setModifiedAt(modifiedDate);
+        user.setRole(userDoc.get("role").toString());
         return user;
     }
 
@@ -119,13 +117,13 @@ public class UserDAOImpl implements UserDAO {
             if (user.getId() == null){
                 user.setId(new ObjectId().toString());
                 Document doc = new Document("_id", new ObjectId(user.getId())).append("email", user.getEmail()).append("password", user.getPassword())
-                        .append("username", user.getUsername()).append("modified_at", user.getModifiedAt());
+                        .append("username", user.getUsername()).append("modified_at", user.getModifiedAt()).append("role", "ROLE_JUNIOR_USER");
                 collection.insertOne(doc);
             }
             else{
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("email", user.getEmail()).append("password", user.getPassword())
-                        .append("username", user.getUsername()).append("modified_at", user.getModifiedAt())
+                        .append("username", user.getUsername()).append("modified_at", user.getModifiedAt()).append("role", user.getRole())
                 );
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", new ObjectId(user.getId()));
                 Document result = collection.findOneAndUpdate(searchQuery, newDocument);

@@ -1,0 +1,18 @@
+.profile{
+width: 300px;
+height: 500px;
+background:#d6d8db;
+border-style: groove;
+border-width: 2px;
+}
+
+.pic{
+width: 296px;
+height: 300px;
+}
+
+.info{
+  padding-top: 30px;
+  padding-left: 20px;
+  color: #5e6570;
+}

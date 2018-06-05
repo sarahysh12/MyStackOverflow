@@ -1,0 +1,27 @@
+<div class="container">
+  <form novalidate [formGroup]="answerForm" (ngSubmit)="onSubmit()">
+
+    <fieldset>
+      <div class="form-group">
+        <div class="col-md-8">
+          <span class=" col-form-label">Answer</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-8">
+          <textarea class="form-control" formControlName="content" placeholder="Write an answer" rows="10" type="text"></textarea>
+        </div>
+      </div>
+
+    </fieldset>
+
+
+
+    <div class="form-group ">
+      <div class="cols-sm-10">
+        <div class="col-auto"></div><button type="submit" class="btn btn-success"  [disabled]="!answerForm.valid" >Save Edits</button>
+      </div>
+    </div>
+  </form>
+</div>

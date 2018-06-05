@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="row mt-4"><h4 class="px-4">{{question.rate}}</h4>
+    <h5 class="px-3">{{question.title}}</h5></div>
+  <hr>
+  <p class="mb-4">{{question.content}}</p>
+  <p class="mb-3">{{question.tags}}</p>
+
+  <small>Asked on {{question.createdAt | date}}</small>
+  <br>
+  <a [routerLink]="" (click)="editQuestionPage(question)">Edit</a>
+  <hr>
+  <h6>Answers</h6>
+
+  <div class="list-group">
+    <div *ngFor="let ans of question.answers">
+        <p class="mb-1">{{ans["answer"]}}
+          <a [routerLink]="" (click)="editAnswerPage(ans)"> Edit</a>
+          <a [routerLink]="" (click)="deleteAnswer(ans)">  Delete</a></p><br>
+        <div *ngFor="let cmt of ans.comments">
+          <p class="comment">{{cmt["content"]}}
+            <a [routerLink]="" (click)="editComment(ans, cmt)"> Edit</a>
+            <a [routerLink]="" (click)="deleteComment(cmt)">  Delete</a></p><br>
+        </div>
+
+      <form [formGroup]="commentForm">
+        <div class="form-group comment">
+          <textarea  type="text" formControlName="cmt" class="form-control col-md-8" placeholder="comment"></textarea>
+          <button type="submit" class="btn btn-sm btn-primary mt-2" (click)="saveComment(ans)">Enter</button>
+        </div>
+      </form>
+
+      <hr>
+      </div>
+  </div>
+
+  <form novalidate [formGroup]="answerForm" (ngSubmit)="onSubmit()" >
+    <div class="form-group">
+      <textarea type="text" formControlName="content" class="form-control" placeholder="Write an Answer" rows="5"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!answerForm.valid">Enter</button>
+  </form>
+
+</div>

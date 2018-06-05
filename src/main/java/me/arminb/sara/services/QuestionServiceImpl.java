@@ -4,6 +4,7 @@ import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.dao.QuestionDAO;
 import me.arminb.sara.entities.Question;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class QuestionServiceImpl implements QuestionService{
         }catch(DataAccessException e){
             throw e;
         }
+
     }
 
     @Override
@@ -34,6 +36,7 @@ public class QuestionServiceImpl implements QuestionService{
         }
     }
 
+    @Secured({"ROLE_JUNIOR_USER","ROLE_SENIOR_USER","ROLE_ADMIN_USER"})
     @Override
     public Question saveQuestion(Question question) throws DataAccessException {
         try{
@@ -44,6 +47,7 @@ public class QuestionServiceImpl implements QuestionService{
         }
     }
 
+    @Secured({"ROLE_JUNIOR_USER","ROLE_SENIOR_USER","ROLE_ADMIN_USER"})
     @Override
     public boolean deleteQuestion(String id) throws DataAccessException {
         try{
