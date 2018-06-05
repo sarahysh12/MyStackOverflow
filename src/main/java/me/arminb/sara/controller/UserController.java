@@ -5,10 +5,12 @@ import me.arminb.sara.dao.DataAccessException;
 import me.arminb.sara.entities.User;
 import me.arminb.sara.services.UserService;
 import org.bson.types.ObjectId;
+import org.eclipse.jetty.server.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -39,7 +41,7 @@ public class UserController {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    public  ResponseEntity<List<User>> find( @RequestParam(value="username", required=false) String username,
+    public  ResponseEntity<List<User>> findUser( @RequestParam(value="username", required=false) String username,
                                              @RequestParam(value="email", required = false) String email,
                                              @RequestParam(value="page", required = false) Integer pageNumber,
                                              @RequestParam(value="pageCount", required = false) Integer pageCount) {
@@ -56,7 +58,6 @@ public class UserController {
             return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> addUser(@RequestBody UserRequest userReq) {
@@ -86,16 +87,15 @@ public class UserController {
         }
     }
 
-
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteUser(@PathVariable("id") String id) {
         try {
             Boolean userResponse = userService.deleteUser(id);
             if(userResponse == false) {
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             else{
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity(HttpStatus.OK);
             }
         }
         catch (DataAccessException e){
